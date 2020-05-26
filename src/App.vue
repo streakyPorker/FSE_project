@@ -26,7 +26,7 @@ export default {
 
   methods:{
     test(){
-      this.axios.get('http://111.231.75.86:8000/api/provinces/?provinceShortNames=四川')
+      this.axios.get('http://111.231.75.86:8000/api/provinces/上海/daily')
       .then(res => {
         console.log(res)
       })
