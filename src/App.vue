@@ -14,6 +14,7 @@
 
 <script>
 import Navbar from "@/components/Navbar";
+import lib from '@/lib/funcs.js'
 
 export default {
   name: "App",
@@ -26,13 +27,35 @@ export default {
 
   methods:{
     test(){
-      this.axios.get('http://111.231.75.86:8000/api/provinces/?provinceShortNames=四川')
-      .then(res => {
-        console.log(res)
-      })
-      .catch(err => {
-        console.error(err); 
-      })
+      // var url = 'http://111.231.75.86:8000/api/countries/中国/daily'
+      // this.axios.get(url)
+      // .then(res => {
+      //   console.log(res)
+      // })
+
+      
+
+      lib.test()
+      // lib.multiTimesFuncs.initProvinceDaily();
+
+      // lib.multiTimesFuncs.loadCountries();
+      // lib.multiTimesFuncs.loadProvinces();
+
+      // lib.oneOffFuncs.loadCountries().then((v)=>{
+      //   console.log(v)
+      //   console.log('done')
+      // })
+
+
+/*
+      export  default{
+          test:test,
+          oneOffFuncs:oneOffFuncs,
+          multiTimesFuncs:multiTimesFuncs,
+      }
+*/
+      
+      // alert('done')
     },
   }
 };
