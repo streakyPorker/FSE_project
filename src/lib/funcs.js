@@ -15,11 +15,36 @@ const provinceIncrQuery = Bmob.Query('province_incr')
 const countryDailyQuery = Bmob.Query('country_daily')
 const provinceDailyQuery = Bmob.Query('province_daily')
 
-var recordQuery = Bmob.Query('record_day')
-var record_Id = Bmob.Query('record_day').get('WI8sKKKL').dateId
 
+const provinceList = ["上海", "云南", "内蒙古", "北京", "台湾", "吉林", "四川", "天津", "宁夏",
+    "安徽", "山东", "山西", "广东", "广西", "新疆", "江苏", "江西", "河北", "河南", "浙江", "海南",
+    "湖北", "湖南", "澳门", "甘肃", "福建", "西藏", "贵州", "辽宁", "重庆", "陕西", "青海", "香港",
+    "黑龙江"]
 
-
+const countryList = ["阿富汗", "阿联酋", "亚美尼亚", "阿塞拜疆", "孟加拉国", "巴林", "文莱", "不丹", "中国", "塞浦路斯", "格鲁吉亚",
+    "印度尼西亚", "印度", "伊朗", "伊拉克", "以色列", "约旦", "日本", "哈萨克斯坦", "吉尔吉斯斯坦", "柬埔寨", "韩国", "科威特",
+    "老挝", "黎巴嫩", "斯里兰卡", "马尔代夫", "缅甸", "蒙古", "马来西亚", "尼泊尔", "阿曼", "巴基斯坦", "菲律宾", "巴勒斯坦",
+    "卡塔尔", "沙特阿拉伯", "新加坡", "叙利亚", "泰国", "塔吉克斯坦", "东帝汶", "土耳其", "乌兹别克斯坦", "越南", "也门共和国",
+    "钻石公主号邮轮", "阿鲁巴", "安圭拉", "安提瓜和巴布达", "巴哈马", "圣巴泰勒米岛", "伯利兹", "百慕大", "巴巴多斯", "加拿大",
+    "哥斯达黎加", "古巴", "库拉索岛", "开曼群岛", "多米尼克", "多米尼加", "瓜德罗普岛", "格林那达", "格陵兰", "危地马拉", "洪都拉斯",
+    "海地", "牙买加", "圣其茨和尼维斯", "圣卢西亚", "墨西哥", "蒙特塞拉特", "马提尼克", "尼加拉瓜", "巴拿马", "波多黎各", "萨尔瓦多",
+    "圣皮埃尔和密克隆群岛", "圣马丁岛", "荷属圣马丁", "特克斯和凯科斯群岛", "特立尼达和多巴哥", "美国", "美属维尔京群岛",
+    "圣文森特和格林纳丁斯", "英属维尔京群岛", "阿根廷", "荷兰加勒比地区", "玻利维亚", "巴西", "智利", "哥伦比亚", "厄瓜多尔",
+    "福克兰群岛", "法属圭亚那", "圭亚那", "秘鲁", "巴拉圭", "苏里南", "乌拉圭", "委内瑞拉", "澳大利亚", "北马里亚纳群岛联邦", "斐济",
+    "关岛", "新喀里多尼亚", "新西兰", "巴布亚新几内亚", "法属波利尼西亚", "阿尔巴尼亚", "安道尔", "奥地利", "比利时", "保加利亚",
+    "波黑", "白俄罗斯", "瑞士", "直布罗陀", "捷克", "德国", "丹麦", "西班牙", "爱沙尼亚", "芬兰", "法罗群岛", "法国", "英国",
+    "根西岛", "希腊", "克罗地亚", "匈牙利", "爱尔兰", "冰岛", "意大利", "泽西岛", "列支敦士登", "立陶宛", "卢森堡", "拉脱维亚",
+    "摩纳哥", "摩尔多瓦", "北马其顿", "马耳他", "黑山", "马恩岛", "荷兰", "挪威", "波兰", "葡萄牙", "罗马尼亚", "俄罗斯", "圣马力诺",
+    "塞尔维亚", "斯洛伐克", "斯洛文尼亚", "瑞典", "乌克兰", "梵蒂冈", "安哥拉", "布隆迪共和国", "贝宁", "布基纳法索", "博茨瓦纳",
+    "中非共和国", "科特迪瓦", "喀麦隆", "刚果（金）", "刚果（布）", "科摩罗", "佛得角", "吉布提", "阿尔及利亚", "埃及", "厄立特里亚",
+    "埃塞俄比亚", "加蓬", "几内亚比绍", "加纳", "几内亚", "冈比亚", "赤道几内亚", "肯尼亚", "利比里亚", "利比亚", "莱索托", "摩洛哥",
+    "马达加斯加", "马里", "莫桑比克", "毛里塔尼亚", "毛里求斯", "马拉维", "马约特", "纳米比亚", "尼日尔", "尼日利亚", "留尼旺",
+    "卢旺达", "苏丹", "塞内加尔", "塞拉利昂", "索马里", "南苏丹", "圣多美和普林西比", "斯威士兰", "塞舌尔", "乍得", "多哥",
+    "突尼斯", "坦桑尼亚", "乌干达", "南非", "赞比亚共和国", "津巴布韦"]
+/*
+乌拉圭"
+塞内加尔
+*/
 var data = {
     //(216+34)*120 34*120 
 }
@@ -32,7 +57,7 @@ var test = () => {
     console.log(countryQuery, provinceQuery, data, citiesStatsQuery,
         refresh, countryStatsQuery, provinceStatsQuery, countryIncrQuery,
         provinceIncrQuery, countryDailyQuery, provinceDailyQuery,
-        record_Id, recordQuery)
+        provinceList, countryList)
 
 
 
@@ -101,63 +126,102 @@ var oneOffFuncs = {
     },
 
 
-    initCountryDaily: () => {
-        axios.get('http://111.231.75.86:8000/api/countries')
+    
+    
+
+
+}
+
+var multiTimesFuncs = {
+
+    loadStats(which) {
+        var q, route
+        if (which === 'country') {
+            q = countryStatsQuery
+            route = 'countries'
+        }
+        else {
+            q = provinceStatsQuery
+            route = 'provinces'
+        }
+        axios.get('http://111.231.75.86:8000/api/' + route)
             .then(res1 => {
-                // var curConfirmed
-                res1.data.forEach(v => {
-                    // multiTimesFuncs.loadProvinceStats(v.provinceShortName)
-                    axios.get('http://111.231.75.86:8000/api/countries/' + v.countryName + "/daily/")
-                        .then(v2 => {
-                            var dateId = [], curConfirmed = [], cumuConfirmed = [], curSuspected = [],
-                                cumuCured = [], cumuDead = [],
-                                cumuSuspectedIncr = [],
-                                cumuDeadIncr = [],
-                                cumuConfirmedIncr = [],
-                                curConfirmedIncr = [],
-                                cumuCuredIncr = []
+                res1.data.forEach(v1 => {
+                    if (which === 'country') {
+                        q.set('name', v1.countryName)
+                    }
+                    else {
+                        q.set('name', v1.provinceShortName)
+                    }
+                    q.set('cumuConfirmed', v1.confirmedCount)
+                    q.set('cumuDead', v1.deadCount)
+                    q.set('cumuCured', v1.curedCount)
+                    q.set('curConfirmed', v1.currentConfirmedCount)
+                    q.set('curSuspected', v1.suspectedCount)
+                    q.save()
 
+                    if (which === 'country') {
+                        // q.set('name',v1.countryName)
+                        console.log('load ' + v1.countryName + ' done')
+                    }
+                    else {
+                        // q.set('name',v1.provinceShortName)
+                        console.log('load ' + v1.provinceShortName + ' done')
 
-                            // var 
-                            v2.data.forEach(v3 => {
-                                dateId.push(v3.dateId)
-                                curConfirmed.push(v3.currentConfirmedCount)
-                                cumuConfirmed.push(v3.confirmedCount)
-                                curSuspected.push(v3.suspectedCount)
-                                cumuCured.push(v3.curedCount)
-                                cumuDead.push(v3.deadCount)
+                    }
 
-                                cumuSuspectedIncr.push(v3.suspectedCountIncr)
-                                cumuDeadIncr.push(v3.deadIncr)
-                                cumuConfirmedIncr.push(v3.confirmedIncr)
-                                curConfirmedIncr.push(v3.currentConfirmedIncr)
-                                cumuCuredIncr.push(v3.curedIncr)
-                            })
-                            countryDailyQuery.set('name', v.countryName)
-                            countryDailyQuery.add('dateId', dateId)
-                            countryDailyQuery.add('curConfirmed', curConfirmed)
-                            countryDailyQuery.add('cumuConfirmed', cumuConfirmed)
-                            countryDailyQuery.add('curSuspected', curSuspected)
-                            countryDailyQuery.add('cumuCured', cumuCured)
-                            countryDailyQuery.add('cumuDead', cumuDead)
-
-                            countryIncrQuery.set('name', v.countryName)
-                            countryIncrQuery.add('cumuSuspectedIncr', cumuSuspectedIncr)
-                            countryIncrQuery.add('cumuDeadIncr', cumuDeadIncr)
-                            countryIncrQuery.add('cumuConfirmedIncr', cumuConfirmedIncr)
-                            countryIncrQuery.add('curConfirmedIncr', curConfirmedIncr)
-                            countryIncrQuery.add('cumuCuredIncr', cumuCuredIncr)
-                            countryIncrQuery.add('dateId', dateId)
-
-
-                            countryDailyQuery.save()
-                            countryIncrQuery.save()
-                            console.log('done')
-
-                        })
                 })
+
+
+
             })
+
+
     },
+
+
+
+
+    loadCityStats: (cityStats) => {
+        // 通过城市数据集导入城市数据
+        citiesStatsQuery.set('name', cityStats.cityName)
+        citiesStatsQuery.set('cumuConfirmed', cityStats.confirmedCount)
+        citiesStatsQuery.set('cumuDead', cityStats.deadCount)
+        citiesStatsQuery.set('cumuCured', cityStats.curedCount)
+        citiesStatsQuery.set('curSuspected', cityStats.suspectedCount)
+        citiesStatsQuery.set('curConfirmed', cityStats.currentConfirmedCount)
+        return cityStats
+    },
+
+    /*
+    name
+    cumuConfirmed
+    cumuDead
+    cumuCured
+    incomeNum
+    curConfirmed
+    curNonsymptom
+    curSuspected
+    */
+
+    dateFormat(fmt, date) {
+        let ret;
+        const opt = {
+            "Y+": date.getFullYear().toString(),        // 年
+            "M+": (date.getMonth() + 1).toString(),     // 月
+            "d+": date.getDate().toString(),            // 日
+
+            // 有其他格式化字符需求可以继续添加，必须转化成字符串
+        };
+        for (let k in opt) {
+            ret = new RegExp("(" + k + ")").exec(fmt);
+            if (ret) {
+                fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+            }
+        }
+        return fmt;
+    },
+
     initProvinceDaily: () => {
         axios.get('http://111.231.75.86:8000/api/provinces')
             .then(res1 => {
@@ -216,180 +280,146 @@ var oneOffFuncs = {
             })
     },
 
-
-}
-
-var multiTimesFuncs = {
-
-    loadStats(which) {
-        var q, route
-        if (which === 'country') {
-            q = countryStatsQuery
-            route = 'countries'
-        }
-        else {
-            q = provinceStatsQuery
-            route = 'provinces'
-        }
-        axios.get('http://111.231.75.86:8000/api/' + route)
+    initCountryDaily: () => {
+        axios.get('http://111.231.75.86:8000/api/countries')
             .then(res1 => {
-                res1.data.forEach(v1 => {
-                    if (which === 'country') {
-                        q.set('name', v1.countryName)
-                    }
-                    else {
-                        q.set('name', v1.provinceShortName)
-                    }
-                    q.set('cumuConfirmed', v1.confirmedCount)
-                    q.set('cumuDead', v1.deadCount)
-                    q.set('cumuCured', v1.curedCount)
-                    q.set('curConfirmed', v1.currentConfirmedCount)
-                    q.set('curSuspected', v1.suspectedCount)
-                    q.save()
+                // var curConfirmed
+                res1.data.forEach(v => {
+                    // multiTimesFuncs.loadProvinceStats(v.provinceShortName)
+                    axios.get('http://111.231.75.86:8000/api/countries/' + v.countryName + "/daily/")
+                        .then(v2 => {
+                            var dateId = [], curConfirmed = [], cumuConfirmed = [], curSuspected = [],
+                                cumuCured = [], cumuDead = [],
+                                cumuSuspectedIncr = [],
+                                cumuDeadIncr = [],
+                                cumuConfirmedIncr = [],
+                                curConfirmedIncr = [],
+                                cumuCuredIncr = []
 
-                    if (which === 'country') {
-                        // q.set('name',v1.countryName)
-                        console.log('load ' + v1.countryName + ' done')
-                    }
-                    else {
-                        // q.set('name',v1.provinceShortName)
-                        console.log('load ' + v1.provinceShortName + ' done')
 
-                    }
+                            // var 
+                            v2.data.forEach(v3 => {
+                                dateId.push(v3.dateId)
+                                curConfirmed.push(v3.currentConfirmedCount)
+                                cumuConfirmed.push(v3.confirmedCount)
+                                curSuspected.push(v3.suspectedCount)
+                                cumuCured.push(v3.curedCount)
+                                cumuDead.push(v3.deadCount)
 
+                                cumuSuspectedIncr.push(v3.suspectedCountIncr)
+                                cumuDeadIncr.push(v3.deadIncr)
+                                cumuConfirmedIncr.push(v3.confirmedIncr)
+                                curConfirmedIncr.push(v3.currentConfirmedIncr)
+                                cumuCuredIncr.push(v3.curedIncr)
+                            })
+                            countryDailyQuery.set('name', v.countryName)
+                            countryDailyQuery.add('dateId', dateId)
+                            countryDailyQuery.add('curConfirmed', curConfirmed)
+                            countryDailyQuery.add('cumuConfirmed', cumuConfirmed)
+                            countryDailyQuery.add('curSuspected', curSuspected)
+                            countryDailyQuery.add('cumuCured', cumuCured)
+                            countryDailyQuery.add('cumuDead', cumuDead)
+
+                            countryIncrQuery.set('name', v.countryName)
+                            countryIncrQuery.add('cumuSuspectedIncr', cumuSuspectedIncr)
+                            countryIncrQuery.add('cumuDeadIncr', cumuDeadIncr)
+                            countryIncrQuery.add('cumuConfirmedIncr', cumuConfirmedIncr)
+                            countryIncrQuery.add('curConfirmedIncr', curConfirmedIncr)
+                            countryIncrQuery.add('cumuCuredIncr', cumuCuredIncr)
+                            countryIncrQuery.add('dateId', dateId)
+
+
+                            countryDailyQuery.save()
+                            countryIncrQuery.save()
+                            console.log('done')
+
+                        })
                 })
-
-
-
             })
-
-
     },
-
-
-    loadCityStats: (cityStats) => {
-        // 通过城市数据集导入城市数据
-        citiesStatsQuery.set('name', cityStats.cityName)
-        citiesStatsQuery.set('cumuConfirmed', cityStats.confirmedCount)
-        citiesStatsQuery.set('cumuDead', cityStats.deadCount)
-        citiesStatsQuery.set('cumuCured', cityStats.curedCount)
-        citiesStatsQuery.set('curSuspected', cityStats.suspectedCount)
-        citiesStatsQuery.set('curConfirmed', cityStats.currentConfirmedCount)
-        return cityStats
-    },
-
-    /*
-    name
-    cumuConfirmed
-    cumuDead
-    cumuCured
-    incomeNum
-    curConfirmed
-    curNonsymptom
-    curSuspected
-    */
-
-    dateFormat(fmt, date) {
-        let ret;
-        const opt = {
-            "Y+": date.getFullYear().toString(),        // 年
-            "M+": (date.getMonth() + 1).toString(),     // 月
-            "d+": date.getDate().toString(),            // 日
-
-            // 有其他格式化字符需求可以继续添加，必须转化成字符串
-        };
-        for (let k in opt) {
-            ret = new RegExp("(" + k + ")").exec(fmt);
-            if (ret) {
-                fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
-            }
-        }
-        return fmt;
-    },
-
-
 
     // 更新国家或地区的累计数据
     // which：'country' or 'province'
-    // today: dateId format,generated by  dateFormat(fmt, date)
 
-    // 存在问题：country带宽过大
-    updateCountryOrProvinceDaily(which, today) {
-        var q_incr, q_daily, route
+
+    clearTableByUnit(query){
+        return new Promise(res=>{
+            query.limit(50)
+            query.find().then(res2=>{
+                res2.destroyAll().then(()=>{
+                    console.log('once succeed')
+                })
+                .catch(()=>{
+                    console.log('end')
+                })
+            })
+            res('???')
+        })
+    },
+
+    async clearTable(daily,incr,time){
+        var i,x,y
+        for(i=0;i<time;i++){
+            x = await multiTimesFuncs.clearTableByUnit(daily)
+        }
+        // console.log(rd)
+        for(i=0;i<time;i++){
+            y = await multiTimesFuncs.clearTableByUnit(incr)
+        }
+        console.log(x,y)
+    },
+    
+
+    updateCountryOrProvinceDaily(which) {
+        var q_incr, q_daily,time
         if (which === 'country') {
-            q_incr = countryIncrQuery
             q_daily = countryDailyQuery
-            route = 'countries'
-            // req = countryListQuery.find()
+            q_incr = countryIncrQuery
+            time = 15   
+            
         }
         else {
-            q_incr = provinceIncrQuery
             q_daily = provinceDailyQuery
-            route = 'provinces'
+            q_incr = provinceIncrQuery
+            time = 2
         }
-        q_daily.find().then(res1 => {
-            // 所有国家和地区
-            for (var i = res1.length - 1; i >= 0; i--) {
-                var v1 = res1[i]
-                console.log(i, res1[i].name)
-                var maxId = v1.dateId[v1.dateId.length - 1]
-                axios.get('http://111.231.75.86:8000/api/' + route + '/' + v1.name + "/daily")
-                    .then(res2 => {
+        q_daily.limit(50)
+        q_incr.limit(50)
+        for(var i=0;i<time;i++){
+            q_daily.find().then((res)=>{
+                res.destroyAll().then().catch(err=>{console.log('end'+err)})
+            }).catch(err=>{console.log(err+'end')})
+            q_incr.find().then((res)=>{
+                res.destroyAll().then().catch(err=>{console.log('end'+err)})
+            }).catch(err=>{console.log(err+'end')})
+        }
 
-                        // console.log(res2.data[res2.data.length-1])
-                        // 可被加入的信息
-                        var newData = []
-                        // var newData = res2.data.filter(v2=>{
-                        //     return eval(v2.dateId)>eval(maxId)&&
-                        //     eval(v2.dateId)<=eval(today)
-                        // })
-                        for (var i = res2.data.length - 1; i >= 0; i--) {
-                            if (eval(res2.data[i].dateId) > eval(maxId) &&
-                                eval(res2.data[i].dateId) <= eval(today))
-                                newData.push(res2.data[i])
-                            else break;
-                        }
+        setTimeout(()=>{
+            if(which=='country') this.initCountryDaily()
+            else this.initProvinceDaily()
+            console.log('done')
+        },3000)
+        
 
-                        if (newData.length == 0) {
-                            console.log('no new data')
-                        }
-                        else {
-                            console.log(newData.length, q_incr)
-                            // console.log(newData[0])
-                            // duime
-                            newData.forEach(v2 => {
-                                q_daily.get(v1.objectId).then(res3 => {
-                                    res3.add('dateId', v2.dateId)
-                                    res3.add('curConfirmed', v2.currentConfirmedCount)
-                                    res3.add('cumuConfirmed', v2.confirmedCount)
-                                    res3.add('curSuspected', v2.suspectedCount)
-                                    res3.add('cumuCured', v2.curedCount)
-                                    res3.add('cumuDead', v2.deadCount)
-                                    res3.save()
-                                })
-
-                                q_incr.equalTo('name', '==', v1.name)
-                                q_incr.find().then(res3 => {
-                                    var rst = res3[0]
-                                    rst.add('dateId', v2.dateId)
-                                    rst.add('cumuSuspectedIncr', v2.suspectedCountIncr)
-                                    rst.add('cumuDeadIncr', v2.deadIncr)
-                                    rst.add('cumuConfirmedIncr', v2.confirmedIncr)
-                                    rst.add('curConfirmedIncr', v2.currentConfirmedIncr)
-                                    rst.add('cumuCuredIncr', v2.curedIncr)
-                                    res3.save()
-                                })
+        
 
 
-                            })
-                            q_daily.save()
-                            q_incr.save()
-                            console.log('upload ' + v1.name + ' done.')
 
-                        }
-                    })
-            }
-        })
+
+
+
+        // if(which=='country'){
+        //   multiTimesFuncs.initCountryDaily()  
+        // }
+        // else{
+        //     multiTimesFuncs.initProvinceDaily()
+        // }
+        // console.log('doing')
+
+
+
+
+
     },
 
     updateCountryOrProvinceStats(which) {
@@ -406,12 +436,12 @@ var multiTimesFuncs = {
             .then(res1 => {
                 res1.data.forEach(v1 => {
                     if (which === 'country') {
-                        q.equalTo('name','==', v1.countryName)
+                        q.equalTo('name', '==', v1.countryName)
                     }
                     else {
-                        q.equalTo('name','==', v1.provinceShortName)
+                        q.equalTo('name', '==', v1.provinceShortName)
                     }
-                    q.find().then(res2=>{
+                    q.find().then(res2 => {
                         console.log(res2)
                         // var rst = q.get(res2.objectId)
                         res2.set('cumuConfirmed', v1.confirmedCount)
@@ -430,7 +460,7 @@ var multiTimesFuncs = {
                         }
 
                     })
-                    
+
 
 
 
