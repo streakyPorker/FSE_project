@@ -8,32 +8,46 @@
         <router-view></router-view>
         <v-btn color="success" @click="test">text</v-btn>
       </v-container>
+
+      <!-- Echart组件 -->
+      <Charts />
     </v-content>
- </v-app>
+  </v-app>
+  
 </template>
 
 <script>
 import Navbar from "@/components/Navbar";
+import Charts from "@/components/Charts";
 
 export default {
   name: "App",
-  components: { Navbar },
+  components: { Navbar, Charts },
   data(){
     return{
-
     }
+  },
+
+  created(){
+  },
+
+  mounted(){
+  },
+
+  beforeDestroy(){
   },
 
   methods:{
     test(){
-      this.axios.get('http://111.231.75.86:8000/api/provinces/?provinceShortNames=四川')
+      this.axios.get('http://111.231.75.86:8000/api/provinces/上海/daily')
       .then(res => {
         console.log(res)
       })
       .catch(err => {
-        console.error(err); 
+        console.error(err);
       })
     },
-  }
+  },
 };
+
 </script>
