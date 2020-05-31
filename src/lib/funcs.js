@@ -133,7 +133,7 @@ var oneOffFuncs = {
 }
 
 var multiTimesFuncs = {
-
+    // 更新当前的统计数据 which可选 'country'或'province',分别代表更新国家信息和省信息
     loadStats(which) {
         var q, route
         if (which === 'country') {
@@ -171,13 +171,11 @@ var multiTimesFuncs = {
                     }
 
                 })
-
-
-
             })
 
 
     },
+
 
 
 
@@ -341,7 +339,7 @@ var multiTimesFuncs = {
     // 更新国家或地区的累计数据
     // which：'country' or 'province'
 
-
+// 清理函数
     clearTableByUnit(query){
         return new Promise(res=>{
             query.limit(50)
@@ -356,7 +354,6 @@ var multiTimesFuncs = {
             res('???')
         })
     },
-
     async clearTable(daily,incr,time){
         var i,x,y
         for(i=0;i<time;i++){
@@ -368,20 +365,21 @@ var multiTimesFuncs = {
         }
         console.log(x,y)
     },
-    
 
     updateCountryOrProvinceDaily(which) {
-        var q_incr, q_daily,time
+        var q_incr, q_daily,time,timeout
         if (which === 'country') {
             q_daily = countryDailyQuery
             q_incr = countryIncrQuery
-            time = 15   
+            timeout=5000
+            time = 5
             
         }
         else {
             q_daily = provinceDailyQuery
             q_incr = provinceIncrQuery
-            time = 2
+            timeout=1500
+            time = 1
         }
         q_daily.limit(50)
         q_incr.limit(50)
@@ -397,78 +395,123 @@ var multiTimesFuncs = {
         setTimeout(()=>{
             if(which=='country') this.initCountryDaily()
             else this.initProvinceDaily()
-            console.log('done')
-        },3000)
-        
-
-        
-
-
-
-
-
-
-        // if(which=='country'){
-        //   multiTimesFuncs.initCountryDaily()  
-        // }
-        // else{
-        //     multiTimesFuncs.initProvinceDaily()
-        // }
-        // console.log('doing')
-
-
-
-
+            console.log('done!')
+        },timeout)
+    },
+    updateCountryOrProvinceStats(which) {
+        if (which === 'country') {
+            countryList.forEach(v1=>{
+                this.updateSpecific(which,v1)
+            })
+            // this.updateSpecific(which,'中国')
+            // var q = Bmob.Query("country_stats")
+            // axios.get('http://111.231.75.86:8000/api/countries')
+            //     .then(res1 => {
+            //         res1.data.forEach(v1 => {
+            //             q.equalTo('name', '==', v1.countryName)
+            //             q.find().then(res2 => {
+            //                 console.log(res2,v1.countryName)
+            //                 // var rst = q.get(res2.objectId)
+            //                 res2.set('cumuConfirmed', v1.confirmedCount)
+            //                 res2.set('cumuDead', v1.deadCount)
+            //                 res2.set('cumuCured', v1.curedCount)
+            //                 res2.set('curConfirmed', v1.currentConfirmedCount)
+            //                 res2.set('curSuspected', v1.suspectedCount)
+            //                 res2.saveAll().catch((err)=>{console.log(err)})
+            //                 console.log('update ' + v1.countryName + ' done')
+            //             })
+            //         })
+            //     })
+        }
+        else {
+            provinceList.forEach(v=>{
+                this.updateSpecific(which,v)
+            })
+        }
 
     },
 
-    updateCountryOrProvinceStats(which) {
-        var q, route
-        if (which === 'country') {
-            q = countryStatsQuery
+    updateSpecific(which,name){
+        var list,q,route
+        if(which=='country'){
+            list = countryList
+            q= Bmob.Query('country_stats')
             route = 'countries'
         }
-        else {
-            q = provinceStatsQuery
+        else if(which=='province'){
+            list = provinceList
+            q = Bmob.Query('province_stats')
             route = 'provinces'
         }
-        axios.get('http://111.231.75.86:8000/api/' + route)
-            .then(res1 => {
-                res1.data.forEach(v1 => {
-                    if (which === 'country') {
-                        q.equalTo('name', '==', v1.countryName)
-                    }
-                    else {
-                        q.equalTo('name', '==', v1.provinceShortName)
-                    }
-                    q.find().then(res2 => {
-                        console.log(res2)
-                        // var rst = q.get(res2.objectId)
-                        res2.set('cumuConfirmed', v1.confirmedCount)
-                        res2.set('cumuDead', v1.deadCount)
-                        res2.set('cumuCured', v1.curedCount)
-                        res2.set('curConfirmed', v1.currentConfirmedCount)
-                        res2.set('curSuspected', v1.suspectedCount)
-                        res2.saveAll()
-                        if (which === 'country') {
-                            // q.set('name',v1.countryName)
-                            console.log('update ' + v1.countryName + ' done')
-                        }
-                        else {
-                            // q.set('name',v1.provinceShortName)
-                            console.log('update ' + v1.provinceShortName + ' done')
-                        }
+        else return false
+        if(list.indexOf(name)==-1){
+            console.log('not found')
+            return false
+        }
 
+        axios.get('http://111.231.75.86:8000/api/'+route+'/'+name)
+        .then(res1=>{
+            q.equalTo('name','==',name)
+            q.find().then(res2=>{
+                console.log(res2)
+                res2.set('cumuConfirmed', res1.data.confirmedCount)
+                res2.set('cumuDead', res1.data.deadCount)
+                res2.set('cumuCured', res1.data.curedCount)
+                res2.set('curConfirmed', res1.data.currentConfirmedCount)
+                res2.set('curSuspected', res1.data.suspectedCount)
+
+
+                // 之后更新境外输入病例
+                if(which=='province'){
+                    axios.get('http://111.231.75.86:8000/api/cities/?provinceShortNames='+name)
+                    .then(res3=>{
+                        // console.log(res3)
+                        for(var i=0;i<res3.data.length;i++){
+                            if(res3.data[i].cityName.indexOf('境外')!=-1){
+                                res2.set('incomeNum',res3.data[i].confirmedCount+res3.data[i].suspectedCount)
+                                res2.set('curNonsymptom',0)
+                                res2.saveAll()
+                                console.log(res3.data[i])
+                                console.log('update ' + name + ' done')
+                                break;
+                            }
+                            // 没有公布境外输入
+                            else if(i==res3.data.length-1){
+                                res2.set('incomeNum',0)
+                                res2.set('curNonsymptom',0)
+                                res2.saveAll()
+                                // console.log(res3.data[i])
+                                console.log('update ' + name + ' done')
+                            }
+                        }
                     })
-
-
-
-
-                })
-
-
-
+                }
+                else{
+                    if(name=='中国'){
+                        console.log('here')
+                        axios.get('http://111.231.75.86:8000/api/cities/')
+                        .then(res3=>{
+                            var total1 = 0
+                            res3.data.forEach(v1=>{
+                                if(v1.cityName.indexOf('境外')!=-1){
+                                    total1+=v1.confirmedCount
+                                    // total2 += v1.suspectedCount
+                                }
+                            })
+                            res2.set('incomeNum',total1)
+                            res2.set('curNonsymptom',0)
+                            res2.saveAll()
+                            console.log('update ' + name + ' done')
+                        })
+                       
+                    }
+                    else res2.saveAll()
+                }
             })
+        })
+
+
+
     },
 
 
@@ -482,4 +525,6 @@ export default {
     test: test,
     oneOffFuncs: oneOffFuncs,
     multiTimesFuncs: multiTimesFuncs,
+    provinceList:provinceList,
+    countryList:countryList
 }

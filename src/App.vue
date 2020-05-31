@@ -6,6 +6,7 @@
       <v-container fluid>
         <router-view></router-view>
         <v-btn color="success" @click="test">text</v-btn>
+        <v-btn color="success" @click="test2">text2</v-btn>
       </v-container>
     </v-content>
   </v-app>
@@ -58,22 +59,16 @@ export default {
       // lib.multiTimesFuncs.updateCountryOrProvinceDaily('province',today)
 
       // lib.multiTimesFuncs.updateCountryOrProvinceDaily('country')
-      lib.multiTimesFuncs.initCountryDaily()
-
 
       // lib.multiTimesFuncs.loadCountries();
       // lib.multiTimesFuncs.loadProvinces();
 
+      // lib.multiTimesFuncs.initCountryDaily()
+      lib.multiTimesFuncs.updateCountryOrProvinceStats('country')
 
-      /*
-      export  default{
-          test:test,
-          oneOffFuncs:oneOffFuncs,
-          multiTimesFuncs:multiTimesFuncs,
-      }
-*/
-
-      // alert('done')
+    },
+    test2(){
+      lib.multiTimesFuncs.updateCountryOrProvinceDaily('province')
     },
 
     dateFormat(fmt, date) {
