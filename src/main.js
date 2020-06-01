@@ -7,6 +7,7 @@ import Bmob from 'hydrogen-js-sdk'
 //Echarts组件所需要引入的文件和中国地图
 import echarts from 'echarts'
 import 'echarts/map/js/china.js'
+import 'echarts/map/js/world.js'  // 引入世界地图
 Vue.prototype.$echarts = echarts  //设置全局属性
 
 Bmob.initialize('fda1e7d2c28f6ef2','123456')
