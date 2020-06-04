@@ -525,6 +525,4 @@ export default {
     test: test,
     oneOffFuncs: oneOffFuncs,
     multiTimesFuncs: multiTimesFuncs,
-    provinceList:provinceList,
-    countryList:countryList
 }

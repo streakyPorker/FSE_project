@@ -8,23 +8,37 @@
         <v-btn color="success" @click="test">text</v-btn>
         <v-btn color="success" @click="test2">text2</v-btn>
       </v-container>
+
+      <!-- Echart组件 -->
+      <Charts />
     </v-content>
   </v-app>
+  
 </template>
 
 <script>
 import Navbar from "@/components/Navbar";
+import Charts from "@/components/Charts";
 import lib from "@/lib/funcs.js";
 import Bmob from "hydrogen-js-sdk";
-
 export default {
   name: "App",
-  components: { Navbar },
-  data() {
-    return {};
+  components: { Navbar, Charts },
+  data(){
+    return{
+    }
   },
 
-  methods: {
+  created(){
+  },
+
+  mounted(){
+  },
+
+  beforeDestroy(){
+  },
+
+  methods:{
     test() {
       console.log(lib, Bmob);
 
@@ -91,6 +105,7 @@ export default {
       }
       return fmt;
     }
-  }
+  },
 };
+
 </script>
