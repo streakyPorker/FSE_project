@@ -96,8 +96,6 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-
-      <v-btn color="success" @click="vxt">测试vuex</v-btn>
     </v-app-bar>
     <v-navigation-drawer app v-model="drawer" class="primary">
       <v-list shaped class="primary">

@@ -42,9 +42,16 @@ export const store = new Vuex.Store({
         links: [
           { icon: "mdi-home", text: "主页", route: "/" ,need:'guest'},
           { icon: "fa-heart", text: "疫情地图", route: "/Charts" ,need:'visitor'},
-          // { icon: "fa-heart", text: "信息管理与发布", route: "/Dispatch" ,need:'prov_admin'},
+          { icon: "fa-heart", text: "信息管理与发布", route: "/Dispatch" ,need:'prov_admin'},
           { icon: "fa-heart", text: "超级管理员管理", route: "/Super" ,need:'super_admin'}
         ],
+
+        dispatchOps:[
+            {text:'全国手动发布',role:'super_admin',path:'/globalauto'},
+            {text:'全国自动发布',role:'super_admin',path:'/globalmanual'},
+            {text:'省内手动发布',role:'prov_admin',path:'/auto'},
+            {text:'省内自动发布',role:'prov_admin',path:'/manual'},
+        ]
 
 
     },
@@ -80,7 +87,25 @@ export const store = new Vuex.Store({
                 username:state.curUser,
                 role:state.curRole
             }
-        }
+        },
+
+        getRoleGrade(state){
+            return state.standard.indexOf(state.curRole)
+        },
+
+        // 发布相关getter
+        getFilteredDispatchOps(state){
+            return state.dispatchOps.filter(v=>{
+                return v.role==state.curRole
+            })
+        },
+
+        getProvinces(state){
+            return state.provinceList
+        },
+        getCountries(state){
+            return state.countryList
+        },
 
     },
         

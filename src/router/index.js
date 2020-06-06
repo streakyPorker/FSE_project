@@ -1,8 +1,15 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Dashboard from '../views/Dashboard.vue'
-import Charts from '../components/Charts.vue'
-import Super from '../components/super.vue'
+import Dashboard from '@/views/Dashboard.vue'
+import Charts from '@/components/Charts.vue'
+import Super from '@/components/Super.vue'
+import Dispatch from '@/components/Dispatch.vue'
+import auto from '@/components/dispatcher/auto.vue'
+import globalauto from '@/components/dispatcher/globalauto.vue'
+import globalmanual from '@/components/dispatcher/globalmanual.vue'
+import manual from '@/components/dispatcher/manual.vue'
+
+
 
 
 
@@ -25,6 +32,16 @@ const routes = [
     name:'Super',
     component:Super
   },
+  {
+    path:'/Dispatch',
+    component:Dispatch,
+    children:[
+      {path:'/auto',component:auto},
+      {path:'/globalauto',component:globalauto},
+      {path:'/globalmanual',component:globalmanual},
+      {path:'/manual',component:manual},
+    ],
+  }
   
   
 ]

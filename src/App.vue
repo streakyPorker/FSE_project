@@ -55,15 +55,13 @@ export default {
     },
     test3(){
 
-      // lib.multiTimesFuncs.updateCountryOrProvinceDaily('province')
-      // this.axios.get('http://111.231.75.86:8000/api/provinces/CHN/河北/')
-      // .then(res=>{
-      //   console.log(res)
-      // })
-      
+      lib.multiTimesFuncs.updateCountryOrProvinceDaily('province')
     },
     test4(){
-
+      this.axios.get('http://111.231.75.86:8000/api/cities/CHN')
+      .then(res=>{
+        console.log(res)
+      })
     },
 
     dateFormat(fmt, date) {
