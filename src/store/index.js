@@ -96,7 +96,7 @@ export const store = new Vuex.Store({
         // 发布相关getter
         getFilteredDispatchOps(state){
             return state.dispatchOps.filter(v=>{
-                return v.role==state.curRole
+                return v.role==state.curRole||state.curRole=='super_admin'
             })
         },
 
