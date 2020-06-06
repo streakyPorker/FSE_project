@@ -5,12 +5,13 @@
     <v-content>
       <v-container fluid>
         <router-view></router-view>
-        <v-btn color="success" @click="test">text</v-btn>
-        <v-btn color="success" @click="test2">text2</v-btn>
+        <v-btn color="success" @click="test">text（勿点）</v-btn>
+        <v-btn color="success" @click="test2">更新测试（勿点）</v-btn>
+        <v-btn color="success" @click="test3">测试用户接口</v-btn>
+        <v-btn color="success" @click="test4">测试vuex</v-btn>
       </v-container>
 
       <!-- Echart组件 -->
-      <Charts />
     </v-content>
   </v-app>
   
@@ -18,12 +19,12 @@
 
 <script>
 import Navbar from "@/components/Navbar";
-import Charts from "@/components/Charts";
 import lib from "@/lib/funcs.js";
 import Bmob from "hydrogen-js-sdk";
+import { store } from "./store/index";
 export default {
   name: "App",
-  components: { Navbar, Charts },
+  components: { Navbar},
   data(){
     return{
     }
@@ -40,49 +41,29 @@ export default {
 
   methods:{
     test() {
-      console.log(lib, Bmob);
+      console.log(lib, Bmob,store);
 
-      // var url = 'http://111.231.75.86:8000/api/countries'
-      // this.axios.get('http://111.231.75.86:8000/api/provinces/河南/daily')
-      // .then(v=>{
-      //   var data = v.data.slice(100)
-      //   console.log(data)
-      // })
-      // console.log([1,2,3,4,5,6,7].slice(-1))
-      // const t = Bmob.Query("rrr2");
-      // t.limit(50);
-
-      //   t.find().then(res => {
-      //     res.destroyAll().then(() => {
-      //       t.find().then(res => {
-      //         res.destroyAll().then(() => {
-      //           t.find().then(res => {
-      //             res.destroyAll().then(() => {
-      //               t.find().then(res => {
-      //                 res.destroyAll().then(() => {
-      //                   console.log("done");
-      //   })})})})})})})});
-      
-
-      // lib.multiTimesFuncs.updateContriesStats();
-      // lib.multiTimesFuncs.loadStats('country')
-      // lib.multiTimesFuncs.loadStats('province')
-
-      // var today = this.dateFormat('YYYYMMdd',new Date())
-      // console.log(today)
-      // lib.multiTimesFuncs.updateCountryOrProvinceDaily('province',today)
-
-      // lib.multiTimesFuncs.updateCountryOrProvinceDaily('country')
-
-      // lib.multiTimesFuncs.loadCountries();
-      // lib.multiTimesFuncs.loadProvinces();
-
-      // lib.multiTimesFuncs.initCountryDaily()
       lib.multiTimesFuncs.updateCountryOrProvinceStats('country')
 
     },
     test2(){
-      lib.multiTimesFuncs.updateCountryOrProvinceDaily('province')
+      this.axios.get('api/api/pta')
+      .then(res=>{
+        console.log(res)
+      })
+      
+    },
+    test3(){
+
+      // lib.multiTimesFuncs.updateCountryOrProvinceDaily('province')
+      // this.axios.get('http://111.231.75.86:8000/api/provinces/CHN/河北/')
+      // .then(res=>{
+      //   console.log(res)
+      // })
+      
+    },
+    test4(){
+
     },
 
     dateFormat(fmt, date) {

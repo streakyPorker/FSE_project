@@ -91,7 +91,7 @@ var oneOffFuncs = {
                 res.data.forEach(v => {
                     countryQuery.set('name', '中国')
                     countryQuery.set('province', v.provinceName)
-                    countryQuery.set('provinceShortName', v.provinceShortName)
+                    countryQuery.set('provinceShortName', v.provinceName)
                     if (isLoadStats) {
                         multiTimesFuncs.loadProvinceStats(v.provinceName)
                     }
@@ -142,7 +142,7 @@ var multiTimesFuncs = {
         }
         else {
             q = provinceStatsQuery
-            route = 'provinces'
+            route = 'provinces/CHN'
         }
         axios.get('http://111.231.75.86:8000/api/' + route)
             .then(res1 => {
@@ -151,7 +151,7 @@ var multiTimesFuncs = {
                         q.set('name', v1.countryName)
                     }
                     else {
-                        q.set('name', v1.provinceShortName)
+                        q.set('name', v1.provinceName)
                     }
                     q.set('cumuConfirmed', v1.confirmedCount)
                     q.set('cumuDead', v1.deadCount)
@@ -165,8 +165,7 @@ var multiTimesFuncs = {
                         console.log('load ' + v1.countryName + ' done')
                     }
                     else {
-                        // q.set('name',v1.provinceShortName)
-                        console.log('load ' + v1.provinceShortName + ' done')
+                        console.log('load ' + v1.provinceName + ' done')
 
                     }
 
@@ -221,12 +220,12 @@ var multiTimesFuncs = {
     },
 
     initProvinceDaily: () => {
-        axios.get('http://111.231.75.86:8000/api/provinces')
+        axios.get('http://111.231.75.86:8000/api/provinces/CHN')
             .then(res1 => {
                 // var curConfirmed
                 res1.data.forEach(v => {
-                    // multiTimesFuncs.loadProvinceStats(v.provinceShortName)
-                    axios.get('http://111.231.75.86:8000/api/provinces/' + v.provinceShortName + "/daily/")
+
+                    axios.get('http://111.231.75.86:8000/api/provinces/CHN/' + v.provinceName + "/daily/")
                         .then(v2 => {
                             var dateId = [], curConfirmed = [], cumuConfirmed = [], curSuspected = [],
                                 cumuCured = [], cumuDead = [],
@@ -252,7 +251,7 @@ var multiTimesFuncs = {
                                 curConfirmedIncr.push(v3.currentConfirmedIncr)
                                 cumuCuredIncr.push(v3.curedIncr)
                             })
-                            provinceDailyQuery.set('name', v.provinceShortName)
+                            provinceDailyQuery.set('name', v.provinceName)
                             provinceDailyQuery.add('dateId', dateId)
                             provinceDailyQuery.add('curConfirmed', curConfirmed)
                             provinceDailyQuery.add('cumuConfirmed', cumuConfirmed)
@@ -260,7 +259,7 @@ var multiTimesFuncs = {
                             provinceDailyQuery.add('cumuCured', cumuCured)
                             provinceDailyQuery.add('cumuDead', cumuDead)
 
-                            provinceIncrQuery.set('name', v.provinceShortName)
+                            provinceIncrQuery.set('name', v.provinceName)
                             provinceIncrQuery.add('cumuSuspectedIncr', cumuSuspectedIncr)
                             provinceIncrQuery.add('cumuDeadIncr', cumuDeadIncr)
                             provinceIncrQuery.add('cumuConfirmedIncr', cumuConfirmedIncr)
@@ -283,7 +282,7 @@ var multiTimesFuncs = {
             .then(res1 => {
                 // var curConfirmed
                 res1.data.forEach(v => {
-                    // multiTimesFuncs.loadProvinceStats(v.provinceShortName)
+
                     axios.get('http://111.231.75.86:8000/api/countries/' + v.countryName + "/daily/")
                         .then(v2 => {
                             var dateId = [], curConfirmed = [], cumuConfirmed = [], curSuspected = [],
@@ -403,25 +402,7 @@ var multiTimesFuncs = {
             countryList.forEach(v1=>{
                 this.updateSpecific(which,v1)
             })
-            // this.updateSpecific(which,'中国')
-            // var q = Bmob.Query("country_stats")
-            // axios.get('http://111.231.75.86:8000/api/countries')
-            //     .then(res1 => {
-            //         res1.data.forEach(v1 => {
-            //             q.equalTo('name', '==', v1.countryName)
-            //             q.find().then(res2 => {
-            //                 console.log(res2,v1.countryName)
-            //                 // var rst = q.get(res2.objectId)
-            //                 res2.set('cumuConfirmed', v1.confirmedCount)
-            //                 res2.set('cumuDead', v1.deadCount)
-            //                 res2.set('cumuCured', v1.curedCount)
-            //                 res2.set('curConfirmed', v1.currentConfirmedCount)
-            //                 res2.set('curSuspected', v1.suspectedCount)
-            //                 res2.saveAll().catch((err)=>{console.log(err)})
-            //                 console.log('update ' + v1.countryName + ' done')
-            //             })
-            //         })
-            //     })
+
         }
         else {
             provinceList.forEach(v=>{
@@ -441,7 +422,7 @@ var multiTimesFuncs = {
         else if(which=='province'){
             list = provinceList
             q = Bmob.Query('province_stats')
-            route = 'provinces'
+            route = 'provinces/CHN'
         }
         else return false
         if(list.indexOf(name)==-1){
@@ -463,7 +444,7 @@ var multiTimesFuncs = {
 
                 // 之后更新境外输入病例
                 if(which=='province'){
-                    axios.get('http://111.231.75.86:8000/api/cities/?provinceShortNames='+name)
+                    axios.get('http://111.231.75.86:8000/api/cities/?provinceNames='+name)
                     .then(res3=>{
                         // console.log(res3)
                         for(var i=0;i<res3.data.length;i++){

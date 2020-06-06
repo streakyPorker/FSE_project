@@ -36,16 +36,52 @@ export const store = new Vuex.Store({
 
         hasLogin: false,
         curUser: '',
-        meetups: [],
-        totalNum: 0,
-        users:[],
+        curRole:'guest',
+
+        standard:['guest','visitor','prov_admin','super_admin'],
+        links: [
+          { icon: "mdi-home", text: "主页", route: "/" ,need:'guest'},
+          { icon: "fa-heart", text: "疫情地图", route: "/Charts" ,need:'visitor'},
+          // { icon: "fa-heart", text: "信息管理与发布", route: "/Dispatch" ,need:'prov_admin'},
+          { icon: "fa-heart", text: "超级管理员管理", route: "/Super" ,need:'super_admin'}
+        ],
+
 
     },
     mutations: {
+        login(state,info){
+            state.hasLogin=true
+            // console.log(info)
+            state.curUser = info.username
+            state.curRole = info.role
+        },
+        logout(state){
+            state.hasLogin=false
+            state.curUser = ''
+            state.curRole = 'guest'
+        },
         
 
     },
     actions: {},
-    getters: {},
+    getters: {
+        hasLogin(state){
+            return state.hasLogin
+        },
+        getFilteredLinks(state){
+            return state.links.filter(v=>{
+                return state.standard.indexOf(state.curRole)>=state.standard.indexOf(v.need)
+   
+            })
+            // return state.links
+        },
+        getUserInfo(state){
+            return {
+                username:state.curUser,
+                role:state.curRole
+            }
+        }
+
+    },
         
 })

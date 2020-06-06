@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Dashboard from '../views/Dashboard.vue'
+import Charts from '../components/Charts.vue'
+import Super from '../components/super.vue'
 
 
 
@@ -13,6 +15,17 @@ const routes = [
     name: 'dashboard',
     component: Dashboard
   },
+  {
+    path:'/Charts',
+    name:'Charts',
+    component:Charts
+  },
+  {
+    path:'/Super',
+    name:'Super',
+    component:Super
+  },
+  
   
 ]
 

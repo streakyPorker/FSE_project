@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import vuetify from './plugins/vuetify';
+import vuetify from './plugins/vuetify'
 import Bmob from 'hydrogen-js-sdk'
+
 
 //Echarts组件所需要引入的文件和中国地图
 import echarts from 'echarts'
