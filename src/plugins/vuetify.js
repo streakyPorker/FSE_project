@@ -7,7 +7,8 @@ export default new Vuetify({
   theme: {
     themes: {
       light: {
-        navbar:"8e24aa",
+        navbar:"#F4F4F4",
+        log_btn:'#5BB9E4',
         primary: '#546E7A',
         success: '#3cd1c2',
         info: '#ffaa2c',

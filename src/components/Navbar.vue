@@ -1,21 +1,21 @@
 
 <template>
   <nav>
-    <v-app-bar flat app class="primary">
-      <v-app-bar-nav-icon class="white--text" elevation-10 @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title class="text-uppercase white--text">
-        <span class="font-weight-light mr-3">病例监控系统</span>
-        <span>G2</span>
+    <v-app-bar flat app class="sd_br" color="#F4F4F4">
+      <v-app-bar-nav-icon class="" elevation-10 @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-toolbar-title class="">
+        <span class=" mr-3 wider">疫情监控系统</span>
+        <span>Coronavirus Disease (COVID-19) DashBoard</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <v-btn color="success" @click="dialog=true" v-show="!hasLogin" class="mr-3">
+      <v-btn color="log_btn white--text" @click="dialog=true" v-show="!hasLogin" class="mr-3">
         <v-icon class="mr-2">fa-user-circle</v-icon>用户注册/登录
       </v-btn>
-      <v-btn color="success" @click="dialog2=true" v-show="!hasLogin" class="mr-3">
+      <v-btn color="log_btn  white--text" @click="dialog2=true" v-show="!hasLogin" class="mr-3">
         <v-icon class="mr-2">fa-user-circle</v-icon>管理员登录
       </v-btn>
-      <v-btn color="success" @click="logout" v-show="hasLogin" class="mr-3">
+      <v-btn  @click="logout" v-show="hasLogin" class="mr-3">
         <v-icon class="mr-2">fa-user-circle</v-icon>登出
       </v-btn>
 
@@ -282,3 +282,14 @@ export default {
   }
 };
 </script>
+
+
+<style scoped>
+.sd_br{
+  border-radius: 20px;
+}
+
+.wider{
+  letter-spacing: 3px;
+}
+</style>

@@ -1,21 +1,53 @@
 <template>
   <div>
-    <!--为Echart准备的容器-->
-    
+    <div>
+      <v-toolbar elevation="0" id="cn_info">
+        <v-icon large light>fa-angle-double-right</v-icon>
+        <v-toolbar-title class="ml-6">中国疫情地图</v-toolbar-title>
+      </v-toolbar>
+    </div>
 
+    <v-layout row wrap>
+      <v-flex xs5 class="ml-6">
+        <v-btn-toggle mandatory>
+          <v-tabs :value="0" @change="mapselectChange">
+            <v-tab :value="0">累计确诊</v-tab>
+            <v-tab :value="1">现存确诊</v-tab>
+            <v-tab :value="2">境外输入</v-tab>
+          </v-tabs>
+        </v-btn-toggle>
+      </v-flex>
+      <v-flex xs3 offset-xs3>
+        <v-btn class="ml-4" @click="setCN">中国疫情</v-btn>
+        <v-btn class="ml-4" @click="unsetCN">世界疫情</v-btn>
+      </v-flex>
+    </v-layout>
 
+    <div class="mx-auto">
+      <v-layout row wrap>
+        <v-flex xs10 offset-xs1>
+          <div id="mapchart" :style="{width: '100%', height: '500px',margin:'auto'}"></div>
+        </v-flex>
+      </v-layout>
+    </div>
+    <v-divider class="mt-4"></v-divider>
+    <v-toolbar elevation="0">
+      <v-tabs :value="0" @change="lineselectChange" class="float-left">
+        <v-tab :value="0">现存确诊</v-tab>
+        <v-tab :value="1">累计确诊</v-tab>
+        <v-tab :value="2">每日新增</v-tab>
+        <v-tab :value="3">累计治愈</v-tab>
+        <v-tab :value="4">累计死亡</v-tab>
+        <v-tab :value="5">治愈率/死亡率</v-tab>
+      </v-tabs>
+      <v-spacer></v-spacer>
 
-    <div id="mapchart" :style="{width: '80%', height: '500px'}"></div>
-    <v-btn-toggle mandatory :value="0" @change="mapselectChange">
-      <v-btn :value="0">累计确诊</v-btn>
+      <div class="title text-no-wrap mr-6">中国疫情趋势图</div>
+      <v-icon large light>fa-angle-double-left</v-icon>
+    </v-toolbar>
 
-      <v-btn :value="1">现存确诊</v-btn>
-
-      <v-btn :value="2">境外输入</v-btn>
-    </v-btn-toggle>
-    <div id="worldmap" :style="{width: '80%', height: '500px'}"></div>
-    <div id="linegraph" :style="{width: '80%', height: '500px'}"></div>
-    <v-btn-toggle mandatory :value="0" @change="lineselectChange">
+    <div id="linegraph" :style="{width: '80%', height: '500px',margin:'auto'}"></div>
+    <!-- <v-btn-toggle mandatory :value="0" @change="lineselectChange">
       <v-btn :value="0">现存确诊</v-btn>
 
       <v-btn :value="1">累计确诊</v-btn>
@@ -27,30 +59,108 @@
       <v-btn :value="4">累计死亡</v-btn>
 
       <v-btn :value="5">治愈率/死亡率</v-btn>
-    </v-btn-toggle>
+    </v-btn-toggle>-->
+    <v-divider class="mt-4"></v-divider>
+    <v-toolbar elevation="0">
+      <v-icon large light>fa-angle-double-right</v-icon>
+      <v-toolbar-title class="ml-6">中国各省市统计数据</v-toolbar-title>
+    </v-toolbar>
     <v-data-table
       :headers="tabheader"
       :items="provinces"
       :single-expand="true"
       :options="taboption"
+      :items-per-page="35"
       item-key="name"
       show-expand
-      class="elevation-1"
-    ></v-data-table>
+      class="elevation-1 mb-12"
+    >
+      <template v-slot:expanded-item="{ headers,item }">
+        <td :colspan="headers.length">
+          <v-data-table
+            :headers="cityHeader"
+            :items-per-page="30"
+            :items="getFilteredCities(item.name) 
+          "
+          ></v-data-table>
+        </td>
+      </template>
+    </v-data-table>
+
+    <v-toolbar elevation="0" id="world_info" class="mt-12">
+      <v-icon large light>fa-angle-double-right</v-icon>
+      <v-toolbar-title class="ml-6">世界疫情地图</v-toolbar-title>
+    </v-toolbar>
+    <v-layout row wrap>
+      <v-flex xs5 class="ml-6">
+        <v-btn-toggle mandatory>
+          <v-tabs :value="0" @change="worldSelectedChange">
+            <v-tab :value="0">累计确诊</v-tab>
+            <v-tab :value="1">现存确诊</v-tab>
+          </v-tabs>
+        </v-btn-toggle>
+      </v-flex>
+      <v-flex xs3 offset-xs3>
+        <v-btn class="ml-4" @click="setCN">中国疫情</v-btn>
+        <v-btn class="ml-4" @click="unsetCN">世界疫情</v-btn>
+      </v-flex>
+
+      <v-flex xs12>
+        <v-carousel v-model="whichWorldMap" :show-arrows="false" hide-delimiters>
+          <v-carousel-item>
+            <div id="worldmap" :style="{width: '80%', height: '600px' ,margin:'auto'}"></div>
+          </v-carousel-item>
+          <v-carousel-item>
+            <div id="bubbleMap" :style="{width: '80%', height: '600px' ,margin:'auto'}"></div>
+          </v-carousel-item>
+        </v-carousel>
+      </v-flex>
+    </v-layout>
+    <v-toolbar elevation="0">
+      <v-tabs :value="0" class="float-left" @change="worldTableChange">
+        <v-tab :value="0">世界国家疫情状况</v-tab>
+        <v-tab :value="1">美国各州疫情状况</v-tab>
+      </v-tabs>
+      <v-spacer></v-spacer>
+
+      <div class="title text-no-wrap mr-6">世界疫情数据表</div>
+      <v-icon large light>fa-angle-double-left</v-icon>
+    </v-toolbar>
+
+    <v-carousel v-model="whichWorldTable" :show-arrows="false" hide-delimiters height="1800px">
+      <v-carousel-item>
+        <v-data-table :headers="worldHeader" :items="countryData" light :items-per-page="30"></v-data-table>
+      </v-carousel-item>
+      <v-carousel-item>
+        <v-data-table :headers="USAHeader" :items="USAProvinceData" light :items-per-page="30"></v-data-table>
+      </v-carousel-item>
+    </v-carousel>
   </div>
 </template>
 
 <script>
 import Bmob from "hydrogen-js-sdk";
+import { store } from "@/store/index.js";
 
 export default {
+  computed: {
+    getProvinceList() {
+      return store.getters.getProvinces;
+    },
+    getFilteredCities() {
+      return province => {
+        return this.filteredCities[this.getProvinceList.indexOf(province)];
+      };
+    }
+  },
+
   data() {
     return {
+      selectedCN: true,
+      whichWorldMap: 0,
+      whichWorldTable: 0,
+
       mapOption: {
-        title: {
-          text: "全国疫情地图",
-          left: "center"
-        },
         tooltip: {
           trigger: "item",
           formatter: function(params) {
@@ -68,13 +178,13 @@ export default {
           type: "piecewise",
           // dimension: 1,
           pieces: [
-            { min: 5000, label: "5000以上", color: "#A13314" },
-            { min: 1000, max: 4999, label: "1000~4999", color: "#CC5D32" },
-            { min: 500, max: 999, label: "500-999", color: "#E87537" },
-            { min: 100, max: 499, label: "100-499", color: "#EBB158" },
-            { min: 10, max: 99, label: "10-99", color: "#F5DA81" },
-            { min: 1, max: 9, label: "1-9", color: "#F3E2A9" },
-            { max: 0, label: "0", color: "#F7F2E0" }
+            { min: 5000, label: "5000以上", color: "#2B81B7" },
+            { min: 1000, max: 4999, label: "1000~4999", color: "#50A9E0" },
+            { min: 500, max: 999, label: "500-999", color: "#91C5E5" },
+            { min: 100, max: 499, label: "100-499", color: "#A4CCE5" },
+            { min: 10, max: 99, label: "10-99", color: "#B9D7EA" },
+            { min: 1, max: 9, label: "1-9", color: "#D6E6F2" },
+            { max: 0, label: "0", color: "#E2F2FA" }
           ],
           color: ["#E0022B", "#E09107", "#A3E00B"]
         },
@@ -83,6 +193,7 @@ export default {
           type: "map",
           map: "china",
           roam: false,
+
           label: {
             show: true,
             color: "#1C1C1C"
@@ -92,33 +203,19 @@ export default {
       },
 
       worldmapOption: {
-        title: {
-          text: "世界疫情地图",
-          left: "center"
-        },
         tooltip: {
           trigger: "item"
-          // formatter: function (params){
-          //   // console.log(params);
-          //   // var res = '';
-          //   // res = params.data.name + '<br/>';
-          //   // res += '累计确诊: ' + params.data.cumuConfirmed + '<br/>';
-          //   // res += '现存确诊: ' + params.data.curConfirmed + '<br/>';
-          //   // res += '累计治愈: ' + params.data.cured + '<br/>';
-          //   // res += '累计死亡: ' + params.data.dead;
-          //   // return res;
-          // }
         },
         visualMap: {
           type: "piecewise",
           pieces: [
-            { min: 5000, label: "5000以上", color: "#A13314" },
-            { min: 1000, max: 4999, label: "1000~4999", color: "#CC5D32" },
-            { min: 500, max: 999, label: "500-999", color: "#E87537" },
-            { min: 100, max: 499, label: "100-499", color: "#EBB158" },
-            { min: 10, max: 99, label: "10-99", color: "#F5DA81" },
-            { min: 1, max: 9, label: "1-9", color: "#F3E2A9" },
-            { max: 0, label: "0", color: "#F7F2E0" }
+            { min: 5000, label: "5000以上", color: "#2B81B7" },
+            { min: 1000, max: 4999, label: "1000~4999", color: "#50A9E0" },
+            { min: 500, max: 999, label: "500-999", color: "#91C5E5" },
+            { min: 100, max: 499, label: "100-499", color: "#A4CCE5" },
+            { min: 10, max: 99, label: "10-99", color: "#B9D7EA" },
+            { min: 1, max: 9, label: "1-9", color: "#D6E6F2" },
+            { max: 0, label: "0", color: "#E2F2FA" }
           ],
           color: ["#E0022B", "#E09107", "#A3E00B"]
         },
@@ -130,6 +227,7 @@ export default {
           label: {
             show: false
           },
+
           // 自定义地区名的映射，从网站粘贴修正
           nameMap: {
             Afghanistan: "阿富汗",
@@ -322,6 +420,71 @@ export default {
         }
       },
 
+      bubbleMapData: [],
+      bubbleMapOption: {
+        // backgroundColor: ,
+        title: {
+          text: "死亡率图"
+        },
+
+        tooltip: {
+          trigger: "item"
+        },
+        xAxis: {
+          type: "log",
+          // 是否约束待定
+          min: -100,
+          name: "累计确诊",
+          nameLocation: "middle",
+          splitLine: {
+            show: false
+          }
+        },
+        yAxis: {
+          type: "log",
+          name: "现存确诊",
+          min: -100,
+          splitLine: {
+            show: false
+          },
+          scale: true
+        },
+        series: [
+          {
+            name: "死亡率",
+            data: this.bubbleMapData,
+            type: "scatter",
+            symbolSize: this.sizeFunction,
+            emphasis: {
+              label: {
+                show: true,
+                formatter: function(param) {
+                  console.log(param)
+                  return 1;
+                },
+                position: "top"
+              }
+            },
+            itemStyle: {
+              shadowBlur: 10,
+              shadowColor: "rgba(120, 36, 50, 0.5)",
+              shadowOffsetX: 0,
+              shadowOffsetY: 0,
+              color: new this.$echarts.graphic.RadialGradient(0.4, 0.3, 1, [
+                {
+                  offset: 0,
+                  color: "rgb(129, 227, 238)"
+                },
+                {
+                  offset: 1,
+                  color: "rgb(25, 183, 207)"
+                }
+              ])
+            }
+          }
+        ]
+      },
+
       linedata: {
         series: [
           { chinadata: [], hubeidata: [] },
@@ -336,10 +499,6 @@ export default {
       },
 
       linegraphoption: {
-        title: {
-          text: "疫情趋势图",
-          left: "center"
-        },
         tooltip: {
           trigger: "axis",
           formatter: null
@@ -354,6 +513,9 @@ export default {
           //设置x轴
           type: "category",
           boundaryGap: false, //坐标轴两边不留白
+          splitLine: {
+            show: false
+          },
           data: []
         },
         yAxis: {
@@ -414,6 +576,13 @@ export default {
         ]
       },
 
+      schema: [
+        { name: "国家", index: 0, text: "国家", unit: "" },
+        { name: "累计确诊", index: 1, text: "累计确诊", unit: "例" },
+        { name: "现存确诊", index: 2, text: "现存确诊", unit: "例" },
+        { name: "死亡率", index: 3, text: "死亡率", unit: "%" }
+      ],
+
       tabheader: [
         {
           text: "疫情地区",
@@ -429,8 +598,39 @@ export default {
         { text: "死亡", value: "death" },
         { text: "", value: "data-table-expand" }
       ],
+      cityHeader: [
+        {
+          text: "城市/地区名称",
+          value: "name"
+        },
+        { text: "现存确诊", value: "curConfirmed" },
+        { text: "累计确诊", value: "cumuConfirmed" },
+        { text: "现存疑似", value: "curSuspected" },
+        { text: "治愈", value: "cumuCured" },
+        { text: "死亡", value: "cumuDead" }
+      ],
+      worldHeader: [
+        { text: "国家/地区名称", value: "countryName" },
+        { text: "所属大洲/地区", value: "continents" },
+        { text: "现存确诊", value: "currentConfirmedCount" },
+        { text: "累计确诊", value: "confirmedCount" },
+        { text: "累计治愈", value: "curedCount" },
+        { text: "累计死亡", value: "deadCount" }
+      ],
+      USAHeader: [
+        { text: "州名称", value: "provinceName" },
+        { text: "现存确诊", value: "currentConfirmedCount" },
+        { text: "现存疑似", value: "suspectedCount" },
+        { text: "累计确诊", value: "confirmedCount" },
+        { text: "累计治愈", value: "curedCount" },
+        { text: "累计死亡", value: "deadCount" }
+      ],
 
       provinces: [],
+      cities: [],
+      filteredCities: [],
+      countryData: [],
+      USAProvinceData: [],
 
       taboption: {
         sortBy: ["total"],
@@ -442,11 +642,16 @@ export default {
     this.getProvinceData();
     this.getDataforLinegraph();
     this.getCountryData();
+    this.getUSAProvinceData();
+
+    // 获取城市信息以供调用
+    this.getCityData();
   },
 
   mounted() {
     this.drawmap();
     this.drawlinegraph();
+    this.drawBubbleMap();
   },
 
   beforeDestroy() {
@@ -456,6 +661,41 @@ export default {
   },
 
   methods: {
+    setCN() {
+      if (!this.selectedCN) {
+        document.getElementById("cn_info").scrollIntoView();
+      }
+      this.selectedCN = true;
+    },
+    unsetCN() {
+      if (this.selectedCN) {
+        document.getElementById("world_info").scrollIntoView();
+      }
+      this.selectedCN = false;
+    },
+
+    // 改成bmob
+    getCityData() {
+      this.getProvinceList.forEach(pname => {
+        var query = Bmob.Query("cities_stats");
+        query.limit(1311);
+        query.equalTo("provinceName", "==", pname);
+        query.find().then(res => {
+          console.log(res.length);
+          res.forEach(v => {
+            var index = this.getProvinceList.indexOf(v.provinceName);
+            if (this.filteredCities[index] == undefined) {
+              this.filteredCities[index] = new Array();
+            }
+            this.filteredCities[index].push(v);
+          });
+        });
+      });
+    },
+    test() {
+      console.log(this.filteredCities);
+    },
+
     getProvinceData() {
       const query = Bmob.Query("province_stats");
       query.find().then(res => {
@@ -494,6 +734,8 @@ export default {
         });
         this.mapOption.series.data = mapdata;
         this.provinces = tabledata;
+
+        // console.log(tabledata)
       });
     },
 
@@ -510,9 +752,56 @@ export default {
           };
           tmpdata.push(tmpitem);
         }
-        console.log(tmpdata);
+        // console.log(tmpdata);
         this.worldmapOption.series.data = tmpdata;
       });
+
+      this.axios.get("http://111.231.75.86:8000/api/countries").then(res => {
+        this.countryData = res.data;
+
+        res.data.forEach(v => {
+          var x = [];
+          x.push(v.confirmedCount);
+          x.push(v.currentConfirmedCount);
+          x.push(v.deadCount / v.confirmedCount);
+          x.push(v.incrVo.confirmedIncr);
+          this.bubbleMapData.push(x);
+        });
+      });
+    },
+
+    getUSAProvinceData() {
+      this.axios
+        .get("http://111.231.75.86:8000/api/provinces/USA/daily")
+        .then(res => {
+          var data = res.data;
+          for (var i = 0; i < data.length; i++) {
+            if (
+              i == data.length - 1 ||
+              data[i + 1].provinceCode != data[i].provinceCode
+            ) {
+              if (data[i].suspectedCount == null) {
+                data[i].suspectedCount = 0;
+                if (data[i].curedCount == null) {
+                  data[i].curedCount =
+                    data[i].confirmedCount -
+                    data[i].currentConfirmedCount -
+                    data[i].suspectedCount -
+                    data[i].deadCount;
+                  if (data[i].curedCount < 0 || data[i].curedCount == null)
+                    data[i].curedCount = 0;
+                }
+                data[i].suspectedCount = "未公布/未统计";
+              }
+              if (data[i].provinceName == "Florida") {
+                console.log("bad guy");
+                console.log(data[i]);
+                data[i].curedCount = 0;
+              }
+              this.USAProvinceData.push(data[i]);
+            }
+          }
+        });
     },
 
     getDataforLinegraph() {
@@ -635,6 +924,15 @@ export default {
       }
     },
 
+    worldSelectedChange(value) {
+      console.log(value);
+      this.whichWorldMap = value;
+    },
+
+    worldTableChange(value) {
+      this.whichWorldTable = value;
+    },
+
     drawworldmap() {
       console.log("draw world map");
       let worldMap = this.$echarts.init(document.getElementById("worldmap"));
@@ -644,6 +942,20 @@ export default {
         worldMap.resize();
       };
       window.addEventListener("resize", sizeFun3);
+    },
+
+    drawBubbleMap() {
+      let bubbleMap = this.$echarts.init(document.getElementById("bubbleMap"));
+      bubbleMap.setOption(this.bubbleMapOption, true);
+      window.addEventListener("resize", () => {
+        bubbleMap.resize();
+      });
+    },
+    sizeFunction(x) {
+      // var y = Math.sqrt(x / 5e8) + 0.1;
+      // return y * 80;
+      console.log(x);
+      return 15;
     },
 
     drawlinegraph() {

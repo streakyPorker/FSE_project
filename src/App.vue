@@ -58,7 +58,7 @@ export default {
       lib.multiTimesFuncs.updateCountryOrProvinceDaily('province')
     },
     test4(){
-      this.axios.get('http://111.231.75.86:8000/api/cities/CHN')
+      this.axios.get('http://111.231.75.86:8000/api/provinces/USA/daily/')
       .then(res=>{
         console.log(res)
       })
