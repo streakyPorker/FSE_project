@@ -19,18 +19,6 @@
             class="mb-2 mr-3"
           >{{item.text}}</v-btn>
 
-          <!-- <router-link to="/manual">
-          <v-btn text color="primary">管理员手动发布</v-btn>
-        </router-link>
-        <router-link to="/auto">
-          <v-btn text color="primary">管理员设置自动发布</v-btn>
-        </router-link>
-        <router-link to="/globalauto">
-          <v-btn text color="primary">全国管理员设置自动发布</v-btn>
-        </router-link>
-        <router-link to="/globalmanual">
-          <v-btn text color="primary">全国管理员设置手动发布</v-btn>
-          </router-link>-->
         </template>
       </v-banner>
       <router-view></router-view>
@@ -63,7 +51,9 @@ export default {
         // 身份不再是管理员
         this.$router.push({ path: "/" });
       }
-    }
+    },
+
+    
   },
 
   data() {

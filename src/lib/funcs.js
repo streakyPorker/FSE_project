@@ -154,24 +154,9 @@ var multiTimesFuncs = {
 
     updateCities(province) {
         if (province == 'all') {
-            axios.get('http://111.231.75.86:8000/api/cities/CHN')
-                .then(r1 => {
-                    r1.data.forEach(v1 => {
-                        citiesStatsQuery.equalTo('name', '==', v1.cityName)
-                        citiesStatsQuery.equalTo('provinceName', '==', v1.provinceName)
-                        citiesStatsQuery.find().then(r2 => {
-                            r2.set('curConfirmed', v1.currentConfirmedCount)
-                            r2.set('cumuConfirmed', v1.confirmedCount)
-                            r2.set('curSuspected', v1.suspectedCount)
-                            r2.set('cumuCured', v1.curedCount)
-                            r2.set('cumuDead', v1.deadCount)
-                            r2.saveAll().then(r3 => {
-                                console.log(r3)
-                                console.log(province + ' done')
-                            })
-                        })
-                    })
-                })
+           provinceList.forEach(v=>{
+               this.updateCities(v)
+           })
         }
         else{
             axios.get('http://111.231.75.86:8000/api/cities/CHN/?provinceNames='+province)

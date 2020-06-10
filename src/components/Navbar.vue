@@ -141,6 +141,9 @@ export default {
     },
     hasLogin() {
       return store.getters.hasLogin;
+    },
+    reqlog(){
+      return store.getters.reqlog
     }
   },
 
@@ -198,7 +201,8 @@ export default {
             console.log(res);
             store.commit("login", {
               username: this.username,
-              role: "visitor"
+              role: "visitor",
+              realm: 'None'
             });
             this.clean1();
             this.showTips("注册成功，已自动登录");
@@ -216,7 +220,8 @@ export default {
           } else {
             store.commit("login", {
               username: this.username,
-              role: "visitor"
+              role: "visitor",
+              realm: 'None'
             });
             this.clean1();
             this.showTips("登录成功");
@@ -238,7 +243,8 @@ export default {
                 this.showTips("登陆成功");
                 store.commit("login", {
                   username: this.username2,
-                  role: "super_admin"
+                  role: "super_admin",
+                  realm:'All'
                 });
               }
             }
@@ -262,8 +268,10 @@ export default {
             else {
               store.commit("login", {
                 username: this.username2,
-                role: "prov_admin"
+                role: "prov_admin",
+                realm: data.realm
               });
+
               this.showTips("登陆成功");
             }
           }
@@ -278,6 +286,17 @@ export default {
     showTips(text) {
       this.alertText = text;
       this.alert = true;
+    }
+  },
+
+  watch:{
+    reqlog:{
+      handler(v){
+        if(v){
+          this.dialog=true
+          store.commit('dereq')
+        }
+      }
     }
   }
 };

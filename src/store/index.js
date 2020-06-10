@@ -37,21 +37,25 @@ export const store = new Vuex.Store({
         hasLogin: false,
         curUser: '',
         curRole:'guest',
+        curRealm:'None',
+
+        reqlog:false,
 
         standard:['guest','visitor','prov_admin','super_admin'],
         links: [
-          { icon: "mdi-home", text: "主页", route: "/" ,need:'guest'},
-          { icon: "fa-heart", text: "疫情地图", route: "/Charts" ,need:'visitor'},
-          { icon: "fa-heart", text: "信息管理与发布", route: "/Dispatch" ,need:'prov_admin'},
-          { icon: "fa-heart", text: "超级管理员管理", route: "/Super" ,need:'super_admin'}
+          { icon: "fa-home", text: "主页", route: "/" ,need:'guest'},
+          { icon: "fa-map-marker", text: "疫情地图", route: "/Charts" ,need:'visitor'},
+          { icon: "fa-cog", text: "信息管理与发布", route: "/Dispatch" ,need:'prov_admin'},
+          { icon: "fa-user-plus", text: "超级管理员管理", route: "/Super" ,need:'super_admin'}
         ],
 
         dispatchOps:[
-            {text:'全国手动发布',role:'super_admin',path:'/globalauto'},
-            {text:'全国自动发布',role:'super_admin',path:'/globalmanual'},
-            {text:'省内手动发布',role:'prov_admin',path:'/auto'},
-            {text:'省内自动发布',role:'prov_admin',path:'/manual'},
-        ]
+            {text:'全国自动发布',role:'super_admin',path:'/globalauto'},
+            {text:'全国手动发布',role:'super_admin',path:'/globalmanual'},
+            {text:'省内自动发布',role:'prov_admin',path:'/auto'},
+            {text:'省内手动发布',role:'prov_admin',path:'/manual'},
+        ],
+        
 
 
     },
@@ -61,11 +65,16 @@ export const store = new Vuex.Store({
             // console.log(info)
             state.curUser = info.username
             state.curRole = info.role
+            state.curRealm = info.realm
         },
         logout(state){
             state.hasLogin=false
             state.curUser = ''
             state.curRole = 'guest'
+            state.curRealm = 'None'
+        },
+        dereq(state){
+            state.reqlog = !state.reqlog
         },
         
 
@@ -74,6 +83,9 @@ export const store = new Vuex.Store({
     getters: {
         hasLogin(state){
             return state.hasLogin
+        },
+        reqlog(state){
+            return state.reqlog
         },
         getFilteredLinks(state){
             return state.links.filter(v=>{
@@ -85,7 +97,8 @@ export const store = new Vuex.Store({
         getUserInfo(state){
             return {
                 username:state.curUser,
-                role:state.curRole
+                role:state.curRole,
+                realm:state.curRealm
             }
         },
 
@@ -96,7 +109,7 @@ export const store = new Vuex.Store({
         // 发布相关getter
         getFilteredDispatchOps(state){
             return state.dispatchOps.filter(v=>{
-                return v.role==state.curRole||state.curRole=='super_admin'
+                return v.role==state.curRole
             })
         },
 

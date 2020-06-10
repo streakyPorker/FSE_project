@@ -18,8 +18,8 @@
         </v-btn-toggle>
       </v-flex>
       <v-flex xs3 offset-xs3>
-        <v-btn class="ml-4" @click="setCN">中国疫情</v-btn>
-        <v-btn class="ml-4" @click="unsetCN">世界疫情</v-btn>
+        <v-btn class="ml-4 float-right" @click="setCN">中国疫情</v-btn>
+        <v-btn class="ml-4 float-right" @click="unsetCN">世界疫情</v-btn>
       </v-flex>
     </v-layout>
 
@@ -86,7 +86,7 @@
         </td>
       </template>
     </v-data-table>
-
+    <v-divider></v-divider>
     <v-toolbar elevation="0" id="world_info" class="mt-12">
       <v-icon large light>fa-angle-double-right</v-icon>
       <v-toolbar-title class="ml-6">世界疫情地图</v-toolbar-title>
@@ -95,34 +95,42 @@
       <v-flex xs5 class="ml-6">
         <v-btn-toggle mandatory>
           <v-tabs :value="0" @change="worldSelectedChange">
-            <v-tab :value="0">累计确诊</v-tab>
-            <v-tab :value="1">现存确诊</v-tab>
+            <v-tab :value="0">累计确诊病例</v-tab>
+            <v-tab :value="1">综合数据散点图</v-tab>
           </v-tabs>
         </v-btn-toggle>
       </v-flex>
       <v-flex xs3 offset-xs3>
-        <v-btn class="ml-4" @click="setCN">中国疫情</v-btn>
-        <v-btn class="ml-4" @click="unsetCN">世界疫情</v-btn>
+        
+        <v-btn class="ml-4 float-right" @click="setCN">中国疫情</v-btn>
+        <v-btn class="ml-4 float-right" @click="unsetCN">世界疫情</v-btn>
       </v-flex>
 
-      <v-flex xs12>
-        <v-carousel v-model="whichWorldMap" :show-arrows="false" hide-delimiters>
-          <v-carousel-item>
-            <div id="worldmap" :style="{width: '80%', height: '600px' ,margin:'auto'}"></div>
-          </v-carousel-item>
-          <v-carousel-item>
-            <div id="bubbleMap" :style="{width: '80%', height: '600px' ,margin:'auto'}"></div>
-          </v-carousel-item>
-        </v-carousel>
-      </v-flex>
+      <v-flex xs12></v-flex>
     </v-layout>
+
+    <div>
+      <div
+        v-show="whichWorldMap==0"
+        id="worldmap"
+        :style="{width: '1300px', height: '600px',margin:'auto'}"
+      ></div>
+    </div>
+    <!-- bubbleMap移到这里 -->
+
+    <div
+      v-show="whichWorldMap==1"
+      id="bubbleMap"
+      :style="{width: '1300px', height: '600px' ,margin:'auto'}"
+    ></div>
+    <div height="50px"></div>
     <v-toolbar elevation="0">
       <v-tabs :value="0" class="float-left" @change="worldTableChange">
         <v-tab :value="0">世界国家疫情状况</v-tab>
         <v-tab :value="1">美国各州疫情状况</v-tab>
       </v-tabs>
       <v-spacer></v-spacer>
-
+<v-divider></v-divider>
       <div class="title text-no-wrap mr-6">世界疫情数据表</div>
       <v-icon large light>fa-angle-double-left</v-icon>
     </v-toolbar>
@@ -424,30 +432,40 @@ export default {
       bubbleMapOption: {
         // backgroundColor: ,
         title: {
-          text: "死亡率图"
+          fontWeight: "lighter",
+          text: "注：因信息差别较大，x轴与y轴采取取自然对数的表示法",
+          left: "center",
+          y: "bottom"
         },
 
-        tooltip: {
-          trigger: "item"
-        },
         xAxis: {
-          type: "log",
+          // type: "log",
           // 是否约束待定
-          min: -100,
-          name: "累计确诊",
-          nameLocation: "middle",
+          // min: -100,
+          max: 16,
+
+          name: "ln(累计确诊)",
+          // nameLocation: "middle",
           splitLine: {
-            show: false
+            // show: false
+            lineStyle: {
+              type: "dashed"
+            }
           }
         },
         yAxis: {
-          type: "log",
-          name: "现存确诊",
-          min: -100,
+          // type: "log",
+          name: "ln(现存确诊)",
+          max: 15,
+          min: -1,
+          // min: -100,
           splitLine: {
-            show: false
-          },
-          scale: true
+            // show: false
+            lineStyle: {
+              type: "dashed"
+            }
+          }
+          // scale: true
         },
         series: [
           {
@@ -455,34 +473,42 @@ export default {
             data: this.bubbleMapData,
             type: "scatter",
             symbolSize: this.sizeFunction,
-            emphasis: {
-              label: {
-                show: true,
-                formatter: function(param) {
-                  console.log(param)
-                  return 1;
-                },
-                position: "top"
-              }
-            },
             itemStyle: {
-              shadowBlur: 10,
-              shadowColor: "rgba(120, 36, 50, 0.5)",
-              shadowOffsetX: 0,
-              shadowOffsetY: 0,
               color: new this.$echarts.graphic.RadialGradient(0.4, 0.3, 1, [
                 {
                   offset: 0,
-                  color: "rgb(129, 227, 238)"
+                  color: "rgb(129, 227, 238,0.8)"
                 },
                 {
                   offset: 1,
-                  color: "rgb(25, 183, 207)"
+                  color: "rgb(25, 183, 207,0.8)"
                 }
               ])
             }
           }
-        ]
+        ],
+        tooltip: {
+          trigger: "item",
+          formatter: function(param) {
+            return (
+              "国家/地区：" +
+              param.data[6] +
+              "<br/>" +
+              "累计确诊人数：" +
+              param.data[2] +
+              "<br/>" +
+              "现存确诊人数：" +
+              param.data[3] +
+              "<br/>" +
+              "死亡率：" +
+              param.data[4] +
+              "%<br/>" +
+              "当日新增确诊病例：" +
+              param.data[5] +
+              "<br/>"
+            );
+          }
+        }
       },
 
       linedata: {
@@ -681,7 +707,7 @@ export default {
         query.limit(1311);
         query.equalTo("provinceName", "==", pname);
         query.find().then(res => {
-          console.log(res.length);
+          // console.log(res.length);
           res.forEach(v => {
             var index = this.getProvinceList.indexOf(v.provinceName);
             if (this.filteredCities[index] == undefined) {
@@ -743,7 +769,7 @@ export default {
       const query = Bmob.Query("country_stats");
       query.limit(300);
       query.find().then(res => {
-        console.log(res);
+        // console.log(res);
         var tmpdata = [];
         for (var x in res) {
           var tmpitem = {
@@ -759,14 +785,22 @@ export default {
       this.axios.get("http://111.231.75.86:8000/api/countries").then(res => {
         this.countryData = res.data;
 
+        // console.log("get the data for bubble map")
+        var tmpbubbledata = [];
         res.data.forEach(v => {
           var x = [];
+          x.push(Math.log(v.confirmedCount));
+          x.push(Math.log(v.currentConfirmedCount));
           x.push(v.confirmedCount);
           x.push(v.currentConfirmedCount);
-          x.push(v.deadCount / v.confirmedCount);
+          x.push(Number((v.deadCount / v.confirmedCount) * 100).toFixed(2));
           x.push(v.incrVo.confirmedIncr);
-          this.bubbleMapData.push(x);
+          x.push(v.countryName);
+          tmpbubbledata.push(x);
         });
+
+        this.bubbleMapData = tmpbubbledata;
+        console.log(this.bubbleMapData);
       });
     },
 
@@ -794,7 +828,7 @@ export default {
                 data[i].suspectedCount = "未公布/未统计";
               }
               if (data[i].provinceName == "Florida") {
-                console.log("bad guy");
+                // console.log("bad guy");
                 console.log(data[i]);
                 data[i].curedCount = 0;
               }
@@ -925,7 +959,6 @@ export default {
     },
 
     worldSelectedChange(value) {
-      console.log(value);
       this.whichWorldMap = value;
     },
 
@@ -945,17 +978,19 @@ export default {
     },
 
     drawBubbleMap() {
+      console.log("draw BubbleMap");
       let bubbleMap = this.$echarts.init(document.getElementById("bubbleMap"));
       bubbleMap.setOption(this.bubbleMapOption, true);
       window.addEventListener("resize", () => {
         bubbleMap.resize();
       });
     },
-    sizeFunction(x) {
+    sizeFunction(x, y) {
       // var y = Math.sqrt(x / 5e8) + 0.1;
       // return y * 80;
-      console.log(x);
-      return 15;
+      // console.log(x);
+
+      return parseFloat(x[4] + y.seriesIndex * 0) * 5;
     },
 
     drawlinegraph() {
@@ -1071,6 +1106,14 @@ export default {
       deep: true,
       handler() {
         this.drawworldmap();
+      }
+    },
+
+    bubbleMapData: {
+      deep: true,
+      handler() {
+        this.bubbleMapOption.series[0].data = this.bubbleMapData;
+        this.drawBubbleMap();
       }
     }
   }

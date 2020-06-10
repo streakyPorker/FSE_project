@@ -54,14 +54,25 @@ export default {
       
     },
     test3(){
-
-      lib.multiTimesFuncs.updateCountryOrProvinceDaily('province')
+      // lib.multiTimesFuncs.updateCities('all')
+      var q = Bmob.Query('cities_stats')
+      q.limit(1000)
+      q.find().then(res=>{
+        console.log(res)
+        res.destroyAll().then(()=>{
+          
+          q.find().then(res3=>{
+            console.log('res3')
+            res3.destroyAll().then(()=>{
+              console.log('done')
+            })
+          })
+        })
+      })
     },
     test4(){
-      this.axios.get('http://111.231.75.86:8000/api/provinces/USA/daily/')
-      .then(res=>{
-        console.log(res)
-      })
+      // console.log(store.getters.getUserInfo.realm)
+      lib.multiTimesFuncs.initCities()
     },
 
     dateFormat(fmt, date) {
