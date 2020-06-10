@@ -1,20 +1,21 @@
 <template>
   <v-app>
-    <Navbar />
+    <Navbar class="fx" />
 
     <v-content>
+      <router-view :style="{width:'100%'}"></router-view>
       <v-container fluid>
-        <router-view></router-view>
         <v-btn color="success" @click="test">text（勿点）</v-btn>
         <v-btn color="success" @click="test2">更新测试（勿点）</v-btn>
         <v-btn color="success" @click="test3">测试用户接口</v-btn>
         <v-btn color="success" @click="test4">测试vuex</v-btn>
+
       </v-container>
 
       <!-- Echart组件 -->
     </v-content>
+
   </v-app>
-  
 </template>
 
 <script>
@@ -24,54 +25,38 @@ import Bmob from "hydrogen-js-sdk";
 import { store } from "./store/index";
 export default {
   name: "App",
-  components: { Navbar},
-  data(){
-    return{
-    }
+  components: { Navbar },
+  data() {
+    return {};
   },
 
-  created(){
-  },
+  created() {},
 
-  mounted(){
-  },
+  mounted() {},
 
-  beforeDestroy(){
-  },
+  beforeDestroy() {},
 
-  methods:{
+  methods: {
     test() {
-      console.log(lib, Bmob,store);
-
-      lib.multiTimesFuncs.updateCountryOrProvinceStats('country')
-
+      console.log(lib, Bmob, store);
     },
-    test2(){
-      this.axios.get('api/api/pta')
-      .then(res=>{
-        console.log(res)
-      })
-      
+    test2() {
+      this.axios.get("api/api/pta").then(res => {
+        console.log(res);
+      });
     },
-    test3(){
+    test3() {
       // lib.multiTimesFuncs.updateCities('all')
-      var q = Bmob.Query('cities_stats')
-      q.limit(1000)
-      q.find().then(res=>{
-        console.log(res)
-        res.destroyAll().then(()=>{
-          
-          q.find().then(res3=>{
-            console.log('res3')
-            res3.destroyAll().then(()=>{
-              console.log('done')
-            })
-          })
-        })
-      })
+      this.axios
+        this.axios.get('http://111.231.75.86:8000/api/cities/CHN/?provinceNames=河南')
+        .then(res => {
+          console.log(res);
+        });
     },
-    test4(){
+    test4() {
       // console.log(store.getters.getUserInfo.realm)
+      lib.multiTimesFuncs.updateCountryOrProvinceStats("country");
+      lib.multiTimesFuncs.updateCountryOrProvinceDaily("country");
       lib.multiTimesFuncs.initCities()
     },
 
@@ -95,7 +80,16 @@ export default {
       }
       return fmt;
     }
-  },
+  }
 };
-
 </script>
+
+
+
+<style scoped>
+.fx {
+  position: "sticky";
+  top: 0;
+  z-index: 6;
+}
+</style>

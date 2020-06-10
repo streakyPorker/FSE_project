@@ -36,10 +36,17 @@
                     </v-flex>
                     <v-flex xs8 offset-xs1 class="mt-8 mb-3"></v-flex>
                     <v-flex xs2>
-                      <v-switch label="更新下辖某个地区疫情数据2" v-model="v2" class="ma-2"></v-switch>
+                      <v-switch label="更新下辖某个地区疫情数据" v-model="v2" class="ma-2"></v-switch>
                     </v-flex>
                     <v-flex xs8 offset-xs1>
-                      <v-text-field label="请输入您想要更新的地区名称" single-line outlined v-model="city"></v-text-field>
+                      <v-select
+                        outlined
+                        v-model="selectedCity"
+                        label="请选择更新的地区"
+                        :items="cities"
+                        prepend-icon="fa-info"
+                        autofocus
+                      ></v-select>
                     </v-flex>
                   </v-layout>
                 </v-card-title>
@@ -89,7 +96,7 @@
                       <div>您的选择：</div>
                       <div>
                         <v-chip v-if="v1" class="ml-2 mb-3">更新本省今日疫情数据</v-chip>
-                        <v-chip v-if="v2" class="ml-2 mb-3">更新本省下辖地级市为：{{city}}</v-chip>
+                        <v-chip v-if="v2" class="ml-2 mb-3">更新本省下辖地级市为：{{selectedCity}}</v-chip>
                         <v-chip class="ml-2 mb-3">更新时间：{{time}}</v-chip>
                       </div>
                     </v-alert>
@@ -97,7 +104,7 @@
                 </v-layout>
               </v-card>
               <div class="float-right">
-                <v-btn color="primary" @click="showTips('test')">提交</v-btn>
+                <v-btn color="primary" @click="submit">提交</v-btn>
                 <v-btn text @click="e1=2">返回</v-btn>
               </div>
             </v-stepper-content>
@@ -109,19 +116,12 @@
 </template>
 <script>
 import { store } from "@/store/index";
-// import Bmob from 'hydrogen-js-sdk';
+import Bmob from "hydrogen-js-sdk";
 // import lib from "@/lib/funcs.js";
 export default {
-  created(){
-    var realm  = store.getters.getUserInfo.realm
-    if(realm == 'None'){
-      console.log('none')
-    }
-
-    
-
+  mounted() {
+    this.loadCities();
   },
-
 
   computed: {
     getHeadAndProvinces() {
@@ -133,23 +133,88 @@ export default {
       var data = store.getters.getCountries;
       data.unshift("全球所有国家和地区");
       return data;
+    },
+    getUserInfo() {
+      return store.getters.getUserInfo;
     }
   },
   data() {
     return {
       e1: 1,
-      selectedProvince: "全国所有省份",
-      selectedCountry: "全球所有国家和地区",
+      selectedCity: "",
+      cities: [],
       v1: true,
-      v2: true,
+      v2: false,
       time: "00:00",
       alert: false,
       alertText: "",
 
-      cityList:[],
+      cityList: []
     };
   },
 
-  watch: {}
+  methods: {
+    loadCities() {
+      this.cities = [];
+      var q = Bmob.Query("cities_stats");
+      q.equalTo("provinceName", "==", this.getUserInfo.realm);
+      q.find().then(res => {
+        res.forEach(v => {
+          this.cities.push(v.name);
+        });
+      });
+    },
+
+    showTips(text) {
+      this.alertText = text;
+      this.alert = true;
+    },
+
+    submit() {
+      this.axios
+        .get(
+          "http://111.231.75.86:8000/api/cities/CHN/?provinceNames=" +
+            this.getUserInfo.realm
+        )
+        .then(res => {
+          var data = res.data;
+          data.forEach(v => {
+            if (v.cityName == this.selectedCity) {
+              var q = Bmob.Query("cities_stats");
+              q.equalTo("name", "==", v.cityName);
+              q.find().then(res2 => {
+                res2.set("curConfirmed", v.currentConfirmedCount);
+                res2.set("cumuConfirmed", v.confirmedCount);
+                res2.set("cumuCured", v.curedCount);
+                res2.set("cumuDead", v.deadCount);
+                res2.set("curSuspected", v.suspectedCount);
+                res2.save().then(r3=>{
+                  console.log(r3)
+                  this.showTips('更新成功')
+                })
+              });
+            }
+          });
+        });
+    }
+  },
+
+  watch: {
+    getUserInfo: {
+      deep: true,
+      handler: v => {
+        if (v.role != "prov_admin") {
+          console.log("back");
+          this.$router.push({ path: "../" });
+        }
+      }
+    },
+    v1(v) {
+      this.v2 = !v;
+    },
+    v2(v) {
+      this.v1 = !v;
+    }
+  }
 };
 </script>

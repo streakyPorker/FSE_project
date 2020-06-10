@@ -2,9 +2,12 @@
   <div>
 
       <v-layout row wrap >
-        <v-flex xs5 class="ml-5 mt-3 mb-5">
-          您好，{{getUserInfo.username}}。您的身份是：
-          {{getRoleName}}
+        <v-flex xs8 offset-xs2 class="ml-5 mt-3 mb-5">
+
+          <blockquote class="blockquote ">您好，{{getUserInfo.username}}。您的身份是：
+          {{getRoleName}}{{getUserInfo.role=='prov_admin'?'，您的管理地区是'+getUserInfo.realm:''}}</blockquote>
+
+          
         </v-flex>
       </v-layout>
       <v-banner >

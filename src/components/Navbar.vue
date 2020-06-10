@@ -2,9 +2,9 @@
 <template>
   <nav>
     <v-app-bar flat app class="sd_br" color="#F4F4F4">
-      <v-app-bar-nav-icon class="" elevation-10 @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title class="">
-        <span class=" mr-3 wider">疫情监控系统</span>
+      <v-app-bar-nav-icon class elevation-10 @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-toolbar-title class>
+        <span class="mr-3 wider">疫情监控系统</span>
         <span>Coronavirus Disease (COVID-19) DashBoard</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
@@ -15,7 +15,7 @@
       <v-btn color="log_btn  white--text" @click="dialog2=true" v-show="!hasLogin" class="mr-3">
         <v-icon class="mr-2">fa-user-circle</v-icon>管理员登录
       </v-btn>
-      <v-btn  @click="logout" v-show="hasLogin" class="mr-3">
+      <v-btn @click="logout" v-show="hasLogin" class="mr-3">
         <v-icon class="mr-2">fa-user-circle</v-icon>登出
       </v-btn>
 
@@ -109,6 +109,8 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+
+      
     </v-navigation-drawer>
     <v-dialog
       v-model="alert"
@@ -142,8 +144,8 @@ export default {
     hasLogin() {
       return store.getters.hasLogin;
     },
-    reqlog(){
-      return store.getters.reqlog
+    reqlog() {
+      return store.getters.reqlog;
     }
   },
 
@@ -202,7 +204,7 @@ export default {
             store.commit("login", {
               username: this.username,
               role: "visitor",
-              realm: 'None'
+              realm: "None"
             });
             this.clean1();
             this.showTips("注册成功，已自动登录");
@@ -221,7 +223,7 @@ export default {
             store.commit("login", {
               username: this.username,
               role: "visitor",
-              realm: 'None'
+              realm: "None"
             });
             this.clean1();
             this.showTips("登录成功");
@@ -244,7 +246,7 @@ export default {
                 store.commit("login", {
                   username: this.username2,
                   role: "super_admin",
-                  realm:'All'
+                  realm: "All"
                 });
               }
             }
@@ -289,12 +291,12 @@ export default {
     }
   },
 
-  watch:{
-    reqlog:{
-      handler(v){
-        if(v){
-          this.dialog=true
-          store.commit('dereq')
+  watch: {
+    reqlog: {
+      handler(v) {
+        if (v) {
+          this.dialog = true;
+          store.commit("dereq");
         }
       }
     }
@@ -304,11 +306,11 @@ export default {
 
 
 <style scoped>
-.sd_br{
+.sd_br {
   border-radius: 20px;
 }
 
-.wider{
+.wider {
   letter-spacing: 3px;
 }
 </style>

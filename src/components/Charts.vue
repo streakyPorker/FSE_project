@@ -433,7 +433,7 @@ export default {
         // backgroundColor: ,
         title: {
           fontWeight: "lighter",
-          text: "注：因信息差别较大，x轴与y轴采取取自然对数的表示法",
+          text: "注：因信息差别较大，x轴与y轴采取取自然对数的表示法，图示半径为死亡率",
           left: "center",
           y: "bottom"
         },

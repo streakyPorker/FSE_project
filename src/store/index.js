@@ -1,6 +1,7 @@
 
 import Vue from 'vue'
 import Vuex from 'vuex'
+import Bmob from 'hydrogen-js-sdk'
 
 Vue.use(Vuex);
 
@@ -119,6 +120,18 @@ export const store = new Vuex.Store({
         getCountries(state){
             return state.countryList
         },
+        getCities(state){
+            var q = Bmob.Query('cities_stats')
+            q.equalTo('provinceName','==',state.curRealm)
+            q.find().then(res=>{
+                var cities = []
+                res.forEach(v=>{
+                    cities.push(v.name)
+                })
+                console.log(cities)
+                return cities
+            })
+        }
 
     },
         

@@ -234,25 +234,27 @@ var multiTimesFuncs = {
                                 curConfirmedIncr.push(v3.currentConfirmedIncr)
                                 cumuCuredIncr.push(v3.curedIncr)
                             })
-                            provinceDailyQuery.set('name', v.provinceName)
-                            provinceDailyQuery.add('dateId', dateId)
-                            provinceDailyQuery.add('curConfirmed', curConfirmed)
-                            provinceDailyQuery.add('cumuConfirmed', cumuConfirmed)
-                            provinceDailyQuery.add('curSuspected', curSuspected)
-                            provinceDailyQuery.add('cumuCured', cumuCured)
-                            provinceDailyQuery.add('cumuDead', cumuDead)
+                            var pdq = Bmob.Query('provice_daily')
+                            pdq.set('name', v.provinceName)
+                            pdq.add('dateId', dateId)
+                            pdq.add('curConfirmed', curConfirmed)
+                            pdq.add('cumuConfirmed', cumuConfirmed)
+                            pdq.add('curSuspected', curSuspected)
+                            pdq.add('cumuCured', cumuCured)
+                            pdq.add('cumuDead', cumuDead)
 
-                            provinceIncrQuery.set('name', v.provinceName)
-                            provinceIncrQuery.add('cumuSuspectedIncr', cumuSuspectedIncr)
-                            provinceIncrQuery.add('cumuDeadIncr', cumuDeadIncr)
-                            provinceIncrQuery.add('cumuConfirmedIncr', cumuConfirmedIncr)
-                            provinceIncrQuery.add('curConfirmedIncr', curConfirmedIncr)
-                            provinceIncrQuery.add('cumuCuredIncr', cumuCuredIncr)
-                            provinceIncrQuery.add('dateId', dateId)
+                            var pdi = Bmob.Query('province_incr')
+                            pdi.set('name', v.provinceName)
+                            pdi.add('cumuSuspectedIncr', cumuSuspectedIncr)
+                            pdi.add('cumuDeadIncr', cumuDeadIncr)
+                            pdi.add('cumuConfirmedIncr', cumuConfirmedIncr)
+                            pdi.add('curConfirmedIncr', curConfirmedIncr)
+                            pdi.add('cumuCuredIncr', cumuCuredIncr)
+                            pdi.add('dateId', dateId)
 
 
-                            provinceDailyQuery.save()
-                            provinceIncrQuery.save()
+                            pdq.save()
+                            pdi.save()
                             console.log('done')
 
                         })
@@ -266,7 +268,7 @@ var multiTimesFuncs = {
                 // var curConfirmed
                 res1.data.forEach(v => {
 
-                    axios.get('http://111.231.75.86:8000/api/countries/' + v.countryName + "/daily/")
+                    axios.get('http://111.231.75.86:8000/api/countries/daily/?countryNames=' + v.countryName)
                         .then(v2 => {
                             var dateId = [], curConfirmed = [], cumuConfirmed = [], curSuspected = [],
                                 cumuCured = [], cumuDead = [],
@@ -349,30 +351,28 @@ var multiTimesFuncs = {
     },
 
     updateCountryOrProvinceDaily(which) {
-        var q_incr, q_daily, time, timeout
+        var q_incr, q_daily, timeout
         if (which === 'country') {
             q_daily = countryDailyQuery
             q_incr = countryIncrQuery
             timeout = 5000
-            time = 5
+
 
         }
         else {
             q_daily = provinceDailyQuery
             q_incr = provinceIncrQuery
             timeout = 1500
-            time = 1
+
         }
-        q_daily.limit(50)
-        q_incr.limit(50)
-        for (var i = 0; i < time; i++) {
-            q_daily.find().then((res) => {
-                res.destroyAll().then().catch(err => { console.log('end' + err) })
-            }).catch(err => { console.log(err + 'end') })
-            q_incr.find().then((res) => {
-                res.destroyAll().then().catch(err => { console.log('end' + err) })
-            }).catch(err => { console.log(err + 'end') })
-        }
+        q_daily.limit(1000)
+        q_incr.limit(1000)
+        q_daily.find().then((res) => {
+            res.destroyAll().then().catch(err => { console.log('end' + err) })
+        }).catch(err => { console.log(err + 'end') })
+        q_incr.find().then((res) => {
+            res.destroyAll().then().catch(err => { console.log('end' + err) })
+        }).catch(err => { console.log(err + 'end') })
 
         setTimeout(() => {
             if (which == 'country') this.initCountryDaily()
@@ -407,29 +407,30 @@ var multiTimesFuncs = {
         if (which == 'country') {
             list = countryList
             q = Bmob.Query('country_stats')
-            route = 'countries'
+            route = 'countries/?countryNames='
         }
         else if (which == 'province') {
             list = provinceList
             q = Bmob.Query('province_stats')
-            route = 'provinces/CHN'
+            route = 'provinces/CHN/?provinceName='
         }
         else return false
-        if (list.indexOf(name) == -1) {
-            console.log('not found')
-            return false
-        }
-
-        axios.get('http://111.231.75.86:8000/api/' + route + '/' + name)
+        console.log(list.length)
+        // if (list.indexOf(name) == -1) {
+        //     console.log('not found')
+        //     return false
+        // }
+        console.log('http://111.231.75.86:8000/api/' + route  + name)
+        axios.get('http://111.231.75.86:8000/api/' + route + name)
             .then(res1 => {
                 q.equalTo('name', '==', name)
                 q.find().then(res2 => {
                     console.log(res2)
-                    res2.set('cumuConfirmed', res1.data.confirmedCount)
-                    res2.set('cumuDead', res1.data.deadCount)
-                    res2.set('cumuCured', res1.data.curedCount)
-                    res2.set('curConfirmed', res1.data.currentConfirmedCount)
-                    res2.set('curSuspected', res1.data.suspectedCount)
+                    res2.set('cumuConfirmed', res1.data[0].confirmedCount)
+                    res2.set('cumuDead', res1.data[0].deadCount)
+                    res2.set('cumuCured', res1.data[0].curedCount)
+                    res2.set('curConfirmed', res1.data[0].currentConfirmedCount)
+                    res2.set('curSuspected', res1.data[0].suspectedCount)
 
 
                     // 之后更新境外输入病例
@@ -479,6 +480,8 @@ var multiTimesFuncs = {
                         else res2.saveAll()
                     }
                 })
+            }).catch(err=>{
+                console.log('is here???',err)
             })
 
 
