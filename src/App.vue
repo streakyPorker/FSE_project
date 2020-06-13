@@ -55,8 +55,8 @@ export default {
     },
     test4() {
       // console.log(store.getters.getUserInfo.realm)
-      lib.multiTimesFuncs.updateCountryOrProvinceStats("country");
-      lib.multiTimesFuncs.updateCountryOrProvinceDaily("country");
+      // lib.multiTimesFuncs.updateCountryOrProvinceStats("country");
+      // lib.multiTimesFuncs.updateCountryOrProvinceDaily("country");
       lib.multiTimesFuncs.initCities()
     },
 
