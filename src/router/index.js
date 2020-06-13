@@ -6,8 +6,6 @@ import Super from '@/components/Super.vue'
 import Dispatch from '@/components/Dispatch.vue'
 import auto from '@/components/dispatcher/auto.vue'
 import globalauto from '@/components/dispatcher/globalauto.vue'
-import globalmanual from '@/components/dispatcher/globalmanual.vue'
-import manual from '@/components/dispatcher/manual.vue'
 
 
 
@@ -38,8 +36,6 @@ const routes = [
     children:[
       {path:'/auto',component:auto},
       {path:'/globalauto',component:globalauto},
-      {path:'/globalmanual',component:globalmanual},
-      {path:'/manual',component:manual},
     ],
   }
   

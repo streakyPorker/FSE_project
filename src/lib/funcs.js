@@ -263,61 +263,54 @@ var multiTimesFuncs = {
     },
 
     initCountryDaily: () => {
-        axios.get('http://111.231.75.86:8000/api/countries')
-            .then(res1 => {
-                // var curConfirmed
-                res1.data.forEach(v => {
-
-                    axios.get('http://111.231.75.86:8000/api/countries/daily/?countryNames=' + v.countryName)
-                        .then(v2 => {
-                            var dateId = [], curConfirmed = [], cumuConfirmed = [], curSuspected = [],
-                                cumuCured = [], cumuDead = [],
-                                cumuSuspectedIncr = [],
-                                cumuDeadIncr = [],
-                                cumuConfirmedIncr = [],
-                                curConfirmedIncr = [],
-                                cumuCuredIncr = []
+        axios.get('http://111.231.75.86:8000/api/countries/daily/?countryNames=中国')
+        .then(v2 => {
+            var dateId = [], curConfirmed = [], cumuConfirmed = [], curSuspected = [],
+                cumuCured = [], cumuDead = [],
+                cumuSuspectedIncr = [],
+                cumuDeadIncr = [],
+                cumuConfirmedIncr = [],
+                curConfirmedIncr = [],
+                cumuCuredIncr = []
 
 
-                            // var 
-                            v2.data.forEach(v3 => {
-                                dateId.push(v3.dateId)
-                                curConfirmed.push(v3.currentConfirmedCount)
-                                cumuConfirmed.push(v3.confirmedCount)
-                                curSuspected.push(v3.suspectedCount)
-                                cumuCured.push(v3.curedCount)
-                                cumuDead.push(v3.deadCount)
+            // var 
+            v2.data.forEach(v3 => {
+                dateId.push(v3.dateId)
+                curConfirmed.push(v3.currentConfirmedCount)
+                cumuConfirmed.push(v3.confirmedCount)
+                curSuspected.push(v3.suspectedCount)
+                cumuCured.push(v3.curedCount)
+                cumuDead.push(v3.deadCount)
 
-                                cumuSuspectedIncr.push(v3.suspectedCountIncr)
-                                cumuDeadIncr.push(v3.deadIncr)
-                                cumuConfirmedIncr.push(v3.confirmedIncr)
-                                curConfirmedIncr.push(v3.currentConfirmedIncr)
-                                cumuCuredIncr.push(v3.curedIncr)
-                            })
-                            countryDailyQuery.set('name', v.countryName)
-                            countryDailyQuery.add('dateId', dateId)
-                            countryDailyQuery.add('curConfirmed', curConfirmed)
-                            countryDailyQuery.add('cumuConfirmed', cumuConfirmed)
-                            countryDailyQuery.add('curSuspected', curSuspected)
-                            countryDailyQuery.add('cumuCured', cumuCured)
-                            countryDailyQuery.add('cumuDead', cumuDead)
-
-                            countryIncrQuery.set('name', v.countryName)
-                            countryIncrQuery.add('cumuSuspectedIncr', cumuSuspectedIncr)
-                            countryIncrQuery.add('cumuDeadIncr', cumuDeadIncr)
-                            countryIncrQuery.add('cumuConfirmedIncr', cumuConfirmedIncr)
-                            countryIncrQuery.add('curConfirmedIncr', curConfirmedIncr)
-                            countryIncrQuery.add('cumuCuredIncr', cumuCuredIncr)
-                            countryIncrQuery.add('dateId', dateId)
-
-
-                            countryDailyQuery.save()
-                            countryIncrQuery.save()
-                            console.log('done')
-
-                        })
-                })
+                cumuSuspectedIncr.push(v3.suspectedCountIncr)
+                cumuDeadIncr.push(v3.deadIncr)
+                cumuConfirmedIncr.push(v3.confirmedIncr)
+                curConfirmedIncr.push(v3.currentConfirmedIncr)
+                cumuCuredIncr.push(v3.curedIncr)
             })
+            countryDailyQuery.set('name', '中国')
+            countryDailyQuery.add('dateId', dateId)
+            countryDailyQuery.add('curConfirmed', curConfirmed)
+            countryDailyQuery.add('cumuConfirmed', cumuConfirmed)
+            countryDailyQuery.add('curSuspected', curSuspected)
+            countryDailyQuery.add('cumuCured', cumuCured)
+            countryDailyQuery.add('cumuDead', cumuDead)
+
+            countryIncrQuery.set('name', '中国')
+            countryIncrQuery.add('cumuSuspectedIncr', cumuSuspectedIncr)
+            countryIncrQuery.add('cumuDeadIncr', cumuDeadIncr)
+            countryIncrQuery.add('cumuConfirmedIncr', cumuConfirmedIncr)
+            countryIncrQuery.add('curConfirmedIncr', curConfirmedIncr)
+            countryIncrQuery.add('cumuCuredIncr', cumuCuredIncr)
+            countryIncrQuery.add('dateId', dateId)
+
+
+            countryDailyQuery.save()
+            countryIncrQuery.save()
+            console.log('done')
+
+        })
     },
 
     // 更新国家或地区的累计数据
@@ -408,6 +401,7 @@ var multiTimesFuncs = {
             list = countryList
             q = Bmob.Query('country_stats')
             route = 'countries/?countryNames='
+
         }
         else if (which == 'province') {
             list = provinceList

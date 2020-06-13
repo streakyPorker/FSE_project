@@ -52,9 +52,7 @@ export const store = new Vuex.Store({
 
         dispatchOps:[
             {text:'全国自动发布',role:'super_admin',path:'/globalauto'},
-            {text:'全国手动发布',role:'super_admin',path:'/globalmanual'},
             {text:'省内自动发布',role:'prov_admin',path:'/auto'},
-            {text:'省内手动发布',role:'prov_admin',path:'/manual'},
         ],
         
 
