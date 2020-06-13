@@ -1,0 +1,13 @@
+统计数据折线图把纵轴的对齐线去掉
+
+
+data:{
+	country:-obj/str,
+	
+	series:-array[
+		0:determine size
+	]
+}
+
+
+
