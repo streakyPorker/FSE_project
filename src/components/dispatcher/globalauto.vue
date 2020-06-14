@@ -159,13 +159,6 @@ export default {
   },
 
   methods: {
-    init(){
-      this.e1=1;
-      this.selectedProvince = "全国所有省份";
-      this.selectedCountry = "全球所有国家和地区",
-      this.v1=this.v2=true;
-      this.time="00:00";
-    },
 
 
     autoCommit() {
@@ -188,9 +181,6 @@ export default {
           lib.multiTimesFuncs.updateSpecific("countries", this.selectedCountry);
         }
       }
-
-      this.showTips("更新成功！")
-      this.init();
     },
     showTips(text) {
       this.alertText = text;

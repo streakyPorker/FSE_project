@@ -401,7 +401,6 @@ var multiTimesFuncs = {
             list = countryList
             q = Bmob.Query('country_stats')
             route = 'countries/?countryNames='
-
         }
         else if (which == 'province') {
             list = provinceList

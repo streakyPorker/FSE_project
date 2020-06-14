@@ -46,7 +46,6 @@
                         :items="cities"
                         prepend-icon="fa-info"
                         autofocus
-                        :disabled="v1"
                       ></v-select>
                     </v-flex>
                   </v-layout>
@@ -155,12 +154,6 @@ export default {
   },
 
   methods: {
-    init(){
-      this.e1=1;
-      this.selectedCity='';
-      this.time='00:00';
-      this.v1=true;
-    },
     loadCities() {
       this.cities = [];
       var q = Bmob.Query("cities_stats");
@@ -178,7 +171,6 @@ export default {
     },
 
     submit() {
-      console.log(this.getUserInfo.realm)
       this.axios
         .get(
           "http://111.231.75.86:8000/api/cities/CHN/?provinceNames=" +
@@ -186,48 +178,24 @@ export default {
         )
         .then(res => {
           var data = res.data;
-
-          if (this.v1) {
-            data.forEach(v => {
-              var q = Bmob.Query("cities_stats")
+          data.forEach(v => {
+            if (v.cityName == this.selectedCity) {
+              var q = Bmob.Query("cities_stats");
               q.equalTo("name", "==", v.cityName);
-              q.equalTo("provinceName", "==", this.getUserInfo.realm);
               q.find().then(res2 => {
                 res2.set("curConfirmed", v.currentConfirmedCount);
                 res2.set("cumuConfirmed", v.confirmedCount);
                 res2.set("cumuCured", v.curedCount);
                 res2.set("cumuDead", v.deadCount);
                 res2.set("curSuspected", v.suspectedCount);
-                res2.saveAll().then(r3 => {
-                  console.log(r3);
-                  this.showTips("更新成功！");
-                });
+                res2.saveAll().then(r3=>{
+                  console.log(r3)
+                  this.showTips('更新成功')
+                })
               });
-            });
-          } else {
-            data.forEach(v => {
-              if (v.cityName == this.selectedCity) {
-                var q = Bmob.Query("cities_stats")
-                q.equalTo("name", "==", v.cityName);
-                q.equalTo("provinceName", "==", this.getUserInfo.realm);
-                q.find().then(res2 => {
-                  res2.set("curConfirmed", v.currentConfirmedCount);
-                  res2.set("cumuConfirmed", v.confirmedCount);
-                  res2.set("cumuCured", v.curedCount);
-                  res2.set("cumuDead", v.deadCount);
-                  res2.set("curSuspected", v.suspectedCount);
-                  res2.saveAll().then(r3 => {
-                    console.log(r3);
-                    this.showTips("更新成功！");
-                  });
-                });
-              }
-            });
-          }
+            }
+          });
         });
-        this.init();
-
-
     }
   },
 
