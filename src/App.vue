@@ -5,10 +5,10 @@
     <v-content>
       <router-view :style="{width:'100%'}"></router-view>
       <v-container fluid>
-        <v-btn color="success" @click="test">text（勿点）</v-btn>
+        <!-- <v-btn color="success" @click="test">text（勿点）</v-btn>
         <v-btn color="success" @click="test2">更新测试（勿点）</v-btn>
         <v-btn color="success" @click="test3">测试用户接口</v-btn>
-        <v-btn color="success" @click="test4">测试vuex</v-btn>
+        <v-btn color="success" @click="test4">测试vuex</v-btn> -->
 
       </v-container>
 
