@@ -95,7 +95,7 @@
       <v-flex xs5 class="ml-6">
         <v-btn-toggle mandatory>
           <v-tabs :value="0" @change="worldSelectedChange">
-            <v-tab :value="0">累计确诊病例</v-tab>
+            <v-tab :value="0">现存确诊病例</v-tab>
             <v-tab :value="1">综合数据散点图</v-tab>
           </v-tabs>
         </v-btn-toggle>
@@ -137,10 +137,10 @@
 
     <v-carousel v-model="whichWorldTable" :show-arrows="false" hide-delimiters height="1800px">
       <v-carousel-item>
-        <v-data-table :headers="worldHeader" :items="countryData" light :items-per-page="30"></v-data-table>
+        <v-data-table :headers="worldHeader" :items="countryData" :options="taboption" light :items-per-page="30"></v-data-table>
       </v-carousel-item>
       <v-carousel-item>
-        <v-data-table :headers="USAHeader" :items="USAProvinceData" light :items-per-page="30"></v-data-table>
+        <v-data-table :headers="USAHeader" :items="USAProvinceData" :options="taboption" light :items-per-page="30"></v-data-table>
       </v-carousel-item>
     </v-carousel>
   </div>
@@ -617,7 +617,7 @@ export default {
           value: "name"
         },
         { text: "现存确诊", value: "current" },
-        { text: "累计确诊", value: "total" },
+        { text: "累计确诊", value: "confirmedCount" },
         { text: "现存疑似", value: "suspect" },
         { text: "境外输入", value: "abroad" },
         { text: "治愈", value: "cure" },
@@ -659,7 +659,7 @@ export default {
       USAProvinceData: [],
 
       taboption: {
-        sortBy: ["total"],
+        sortBy: ["confirmedCount"],
         sortDesc: [true]
       }
     };
@@ -741,7 +741,7 @@ export default {
           var tableitem = {
             name: res[x].name,
             current: res[x].curConfirmed,
-            total: res[x].cumuConfirmed,
+            confirmedCount: res[x].cumuConfirmed,
             abroad: res[x].incomeNum,
             suspect: res[x].curSuspected,
             cure: res[x].cumuCured,
@@ -845,7 +845,7 @@ export default {
       const qchinadaily = Bmob.Query("country_daily");
       qchinadaily.equalTo("name", "==", "中国");
       qchinadaily.find().then(res => {
-        // console.log(res)
+        console.log(res)
         for (var x = 1; x < res[0].cumuConfirmed.length; x++) {
           tmplinedata.series[1].chinadata.push(res[0].cumuConfirmed[x]);
           tmplinedata.series[0].chinadata.push(res[0].curConfirmed[x]);
@@ -995,6 +995,8 @@ export default {
 
     drawlinegraph() {
       console.log("drawlinegraph");
+      console.log(this.linegraphoption)
+      console.log(this.linedata)
       let lineGraph = this.$echarts.init(document.getElementById("linegraph"));
       lineGraph.setOption(this.linegraphoption, true);
       //图表随窗口自适应
