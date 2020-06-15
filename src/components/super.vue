@@ -242,6 +242,9 @@ export default {
   },
 
   computed: {
+    getRoleGrade() {
+      return store.getters.getRoleGrade;
+    },
     getConfig() {
       if (this.v1) {
         if (this.adder == "单个添加") {
@@ -445,6 +448,12 @@ export default {
     }
   },
   watch: {
+       getRoleGrade(val, oldVal) {
+      if (val < 3 || oldVal < 3) {
+        // 身份不再是管理员
+        this.$router.push({ path: "/" });
+      }
+    },
     adminName(val) {
       var flag = true;
       this.provAdmins.forEach(v => {
@@ -453,7 +462,13 @@ export default {
           flag = false;
         }
       });
-      if (flag) this.valid = true;
+      if (flag){
+        if(val.length>10) this.valid = false;
+        else this.valid = true;
+      }
+      
+      
+      
     },
 
     append(val) {
@@ -467,7 +482,7 @@ export default {
           flag = false;
         }
       });
-      if (flag) this.valid = true;
+      if (flag&&val.length<=8&&this.password.length<=15) this.valid = true;
     },
 
     delName(val) {
@@ -478,8 +493,18 @@ export default {
           flag = false;
         }
       });
-      if (flag) this.valid = false;
+      if (flag||val.length>10) this.valid = false;
+      if(this.delName.length>10) this.valid=false;
+    },
+
+    password(v){
+      if(v.length>15) this.valid = false;
     }
+
+
+
+
+
   }
 };
 </script>

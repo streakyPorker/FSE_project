@@ -46,13 +46,14 @@
                         :items="cities"
                         prepend-icon="fa-info"
                         autofocus
+                        :disabled="v1"
                       ></v-select>
                     </v-flex>
                   </v-layout>
                 </v-card-title>
               </v-card>
               <v-spacer></v-spacer>
-              <v-btn color="primary" :disabled="!(v1||v2)" @click="e1 = 2" class="float-right">下一步</v-btn>
+              <v-btn color="primary" :disabled="selectedCity.length==0&&v2" @click="e1 = 2" class="float-right">下一步</v-btn>
             </v-stepper-content>
             <v-stepper-content step="2">
               <v-card class="mb-12" height="450px">
@@ -148,12 +149,19 @@ export default {
       time: "00:00",
       alert: false,
       alertText: "",
+      valid:true,
 
       cityList: []
     };
   },
 
   methods: {
+    init(){
+      this.e1=1;
+      this.selectedCity='';
+      this.time='00:00';
+      this.v1=true;
+    },
     loadCities() {
       this.cities = [];
       var q = Bmob.Query("cities_stats");
@@ -171,6 +179,7 @@ export default {
     },
 
     submit() {
+      console.log(this.getUserInfo.realm)
       this.axios
         .get(
           "http://111.231.75.86:8000/api/cities/CHN/?provinceNames=" +
@@ -178,24 +187,48 @@ export default {
         )
         .then(res => {
           var data = res.data;
-          data.forEach(v => {
-            if (v.cityName == this.selectedCity) {
-              var q = Bmob.Query("cities_stats");
+
+          if (this.v1) {
+            data.forEach(v => {
+              var q = Bmob.Query("cities_stats")
               q.equalTo("name", "==", v.cityName);
+              q.equalTo("provinceName", "==", this.getUserInfo.realm);
               q.find().then(res2 => {
                 res2.set("curConfirmed", v.currentConfirmedCount);
                 res2.set("cumuConfirmed", v.confirmedCount);
                 res2.set("cumuCured", v.curedCount);
                 res2.set("cumuDead", v.deadCount);
                 res2.set("curSuspected", v.suspectedCount);
-                res2.saveAll().then(r3=>{
-                  console.log(r3)
-                  this.showTips('更新成功')
-                })
+                res2.saveAll().then(r3 => {
+                  console.log(r3);
+                  this.showTips("更新成功！");
+                });
               });
-            }
-          });
+            });
+          } else {
+            data.forEach(v => {
+              if (v.cityName == this.selectedCity) {
+                var q = Bmob.Query("cities_stats")
+                q.equalTo("name", "==", v.cityName);
+                q.equalTo("provinceName", "==", this.getUserInfo.realm);
+                q.find().then(res2 => {
+                  res2.set("curConfirmed", v.currentConfirmedCount);
+                  res2.set("cumuConfirmed", v.confirmedCount);
+                  res2.set("cumuCured", v.curedCount);
+                  res2.set("cumuDead", v.deadCount);
+                  res2.set("curSuspected", v.suspectedCount);
+                  res2.saveAll().then(r3 => {
+                    console.log(r3);
+                    this.showTips("更新成功！");
+                  });
+                });
+              }
+            });
+          }
         });
+        this.init();
+
+
     }
   },
 
@@ -211,10 +244,17 @@ export default {
     },
     v1(v) {
       this.v2 = !v;
+      if(v) this.valid =true;
     },
     v2(v) {
       this.v1 = !v;
-    }
+
+
+    },
+
+    
+
+    
   }
 };
 </script>

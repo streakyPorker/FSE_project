@@ -44,6 +44,7 @@
                         :items="getHeadAndProvinces"
                         prepend-icon="fa-info"
                         autofocus
+                        :disabled="!v1"
                       ></v-select>
                     </v-flex>
 
@@ -58,6 +59,7 @@
                         :items="getHeadAndCountries"
                         prepend-icon="fa-info"
                         autofocus
+                        :disabled="!v2"
                       ></v-select>
                     </v-flex>
                   </v-layout>
@@ -117,7 +119,7 @@
                 </v-layout>
               </v-card>
               <div class="float-right">
-                <v-btn color="primary" @click="showTips('test')">提交</v-btn>
+                <v-btn color="primary" @click="autoCommit">提交</v-btn>
                 <v-btn text @click="e1=2">返回</v-btn>
               </div>
             </v-stepper-content>
@@ -166,21 +168,24 @@ export default {
         if (this.selectedProvince == "全国所有省份") {
           lib.multiTimesFuncs.updateCountryOrProvinceStats("province");
           lib.multiTimesFuncs.updateCountryOrProvinceDaily("province");
+         
           // lib.multiTimesFuncs.updateCities('all')
         } else {
           var name = this.selectedProvince;
           lib.multiTimesFuncs.updateSpecific("province", name);
           // lib.multiTimesFuncs.updateCities(name)
         }
+         lib.multiTimesFuncs.updateSpecific("country", '中国');
       }
       if (this.v2) {
         if (this.selectedCountry == "全球所有国家和地区") {
-          lib.multiTimesFuncs.updateCountryOrProvinceStats("countries");
-          lib.multiTimesFuncs.updateCountryOrProvinceDaily("countries");
+          lib.multiTimesFuncs.updateCountryOrProvinceStats("country");
+          lib.multiTimesFuncs.updateCountryOrProvinceDaily("country");
         } else {
-          lib.multiTimesFuncs.updateSpecific("countries", this.selectedCountry);
+          lib.multiTimesFuncs.updateSpecific("country", this.selectedCountry);
         }
       }
+      this.showTips("发布成功")
     },
     showTips(text) {
       this.alertText = text;

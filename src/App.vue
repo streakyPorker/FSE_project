@@ -7,8 +7,8 @@
       <v-container fluid>
         <!-- <v-btn color="success" @click="test">text（勿点）</v-btn>
         <v-btn color="success" @click="test2">更新测试（勿点）</v-btn>
-        <v-btn color="success" @click="test3">测试用户接口</v-btn>
-        <v-btn color="success" @click="test4">测试vuex</v-btn> -->
+        <v-btn color="success" @click="test3">测试用户接口</v-btn> -->
+        <!-- <v-btn color="success" @click="test4">测试vuex</v-btn> -->
 
       </v-container>
 
@@ -46,17 +46,17 @@ export default {
       });
     },
     test3() {
-      // lib.multiTimesFuncs.updateCities('all')
-      this.axios
-        this.axios.get('http://111.231.75.86:8000/api/cities/CHN/?provinceNames=河南')
-        .then(res => {
-          console.log(res);
-        });
+      
+
     },
     test4() {
       // console.log(store.getters.getUserInfo.realm)
-
-      lib.multiTimesFuncs.updateCountryOrProvinceDaily("country");
+      this.axios
+        this.axios.get('http://111.231.75.86:8000/api/cities/CHN')
+        .then(res => {
+          console.log(res);
+        });
+      // lib.multiTimesFuncs.updateCountryOrProvinceDaily('country')
 
     },
 

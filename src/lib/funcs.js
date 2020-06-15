@@ -348,7 +348,7 @@ var multiTimesFuncs = {
         if (which === 'country') {
             q_daily = countryDailyQuery
             q_incr = countryIncrQuery
-            timeout = 5000
+            timeout = 1000
 
 
         }
@@ -370,7 +370,7 @@ var multiTimesFuncs = {
         setTimeout(() => {
             if (which == 'country') this.initCountryDaily()
             else this.initProvinceDaily()
-            console.log('done!')
+            console.log(which+'done!')
         }, timeout)
     },
 
@@ -428,7 +428,7 @@ var multiTimesFuncs = {
 
                     // 之后更新境外输入病例
                     if (which == 'province') {
-                        axios.get('http://111.231.75.86:8000/api/cities/?provinceNames=' + name)
+                        axios.get('http://111.231.75.86:8000/api/cities/CHN/?provinceNames=' + name)
                             .then(res3 => {
                                 // console.log(res3)
                                 for (var i = 0; i < res3.data.length; i++) {
@@ -454,11 +454,11 @@ var multiTimesFuncs = {
                     else {
                         if (name == '中国') {
                             console.log('here')
-                            axios.get('http://111.231.75.86:8000/api/cities/')
+                            axios.get('http://111.231.75.86:8000/api/cities/CHN')
                                 .then(res3 => {
                                     var total1 = 0
                                     res3.data.forEach(v1 => {
-                                        if (v1.cityName.indexOf('境外') != -1) {
+                                        if (v1.cityName.indexOf('境外') != -1 && provinceList.indexOf(v1.provinceName)!=-1) {
                                             total1 += v1.confirmedCount
                                             // total2 += v1.suspectedCount
                                         }
