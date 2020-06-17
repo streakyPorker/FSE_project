@@ -234,7 +234,7 @@ var multiTimesFuncs = {
                                 curConfirmedIncr.push(v3.currentConfirmedIncr)
                                 cumuCuredIncr.push(v3.curedIncr)
                             })
-                            var pdq = Bmob.Query('provice_daily')
+                            var pdq = Bmob.Query('province_daily')
                             pdq.set('name', v.provinceName)
                             pdq.add('dateId', dateId)
                             pdq.add('curConfirmed', curConfirmed)
@@ -355,7 +355,7 @@ var multiTimesFuncs = {
         else {
             q_daily = provinceDailyQuery
             q_incr = provinceIncrQuery
-            timeout = 1500
+            timeout = 2000
 
         }
         q_daily.limit(1000)

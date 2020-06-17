@@ -855,7 +855,7 @@ export default {
         }
       });
 
-      const qhubeidaily = Bmob.Query("province_daily");
+      const qhubeidaily = Bmob.Query("provice_daily");
       qhubeidaily.equalTo("name", "==", "湖北");
       qhubeidaily.find().then(res => {
         // console.log(res)

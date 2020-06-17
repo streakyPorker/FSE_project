@@ -168,8 +168,9 @@ export default {
         if (this.selectedProvince == "全国所有省份") {
           lib.multiTimesFuncs.updateCountryOrProvinceStats("province");
           lib.multiTimesFuncs.updateCountryOrProvinceDaily("province");
+          // lib.multiTimesFuncs.initProvinceDaily()
          
-          // lib.multiTimesFuncs.updateCities('all')
+          lib.multiTimesFuncs.updateCities('all')
         } else {
           var name = this.selectedProvince;
           lib.multiTimesFuncs.updateSpecific("province", name);

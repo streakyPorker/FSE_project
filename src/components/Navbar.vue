@@ -205,11 +205,7 @@ export default {
   },
 
   methods: {
-    vxt() {
-      console.log(store.getters.getFilteredLinks, this.opList);
-      // this.showTips("用户名不存在");
-      console.log(store.getters.getUserInfo);
-    },
+
     clean1() {
       this.valid = false;
       this.dialog = false;
@@ -308,13 +304,11 @@ export default {
         // console.log()
         var g2_user = Bmob.Query("g2_user");
         g2_user.equalTo("username", "==", this.username2);
+        g2_user.equalTo('role','==',"province_admin")
         g2_user.find().then((res) => {
           if (res.length == 0) this.showTips("用户名不存在");
           else {
             var data = res[0];
-            console.log(data.password);
-            console.log(this.password2);
-            console.log(data.password != this.password2);
             if (data.password != this.password2) this.showTips("密码错误");
             else {
               store.commit("login", {

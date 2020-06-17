@@ -73,17 +73,8 @@
       </div>
       <v-bottom-navigation class="overflow-hidden mt-12">
         <v-btn value="favorites" @click="toa">
-          <span>复产复工子系统</span>
+          <span>疫情管控系统</span>
           <v-icon>mdi-heart</v-icon>
-        </v-btn>
-
-        <v-btn value="nearby" @click="tob">
-          <span>同城交通子系统</span>
-          <v-icon>mdi-map-marker</v-icon>
-        </v-btn>
-        <v-btn value="recent" @click="toc">
-          <span>物资申领子系统</span>
-          <v-icon>mdi-history</v-icon>
         </v-btn>
       </v-bottom-navigation>
     </div>
@@ -116,7 +107,7 @@ export default {
   data() {
     return {
       cnStats: {},
-      urla: "localhost:8080",
+      urla: "localhost:3000",
       urlb: "localhost:8080",
       urlc: "localhost:8080",
       sbmob: Bmob,
@@ -146,8 +137,8 @@ export default {
 
   methods: {
     toa() {
-      window.location.href =
-        this.toa+ "?username=" + store.getters.getUserInfo.username
+      console.log("??")
+      window.location.href = 'http://120.26.184.236:3000'
     },
     tob() {
       window.location.href =
